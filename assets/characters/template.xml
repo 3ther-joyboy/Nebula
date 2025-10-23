@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<character>
+	<id>0</id>
+	<name>Jmeno</name>
+
+	<weight>2.3</weight>
+	<jump_velocity>10.0</jump_velocity>
+	<air_jump_count>4</air_jump_count>
+	<aceleration>4.1</jump_velocity>
+	<max_speed>2.1</max_speed>
+
+	<colider>0.3</colider>
+
+	<sprites>something/something</sprites>
+</character>
