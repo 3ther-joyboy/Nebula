@@ -1,0 +1,14 @@
+[package]
+name = "Nebula"
+version = "0.0.1"
+edition = "2024"
+
+[dependencies]
+chrono = "0.4.42"
+gilrs = "0.11.0"      # Game Input lib
+glium = "0.36.0"      # OpenGL
+image = "0.25.8"      # Images
+serde = { version = "1.0.228", features = ["derive"] } # Serialization
+
+serde_json = "1.0.145"# Serialization to JSON
+uuid = { version = "1.18.1", features = ["v4"]}
