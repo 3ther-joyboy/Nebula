@@ -1,6 +1,7 @@
 use std::{
     collections::HashMap,
 };
+use crate::game::CharacterInput;
 use serde::{
     Serialize,
     Deserialize,
@@ -26,9 +27,15 @@ pub struct Animations {
     air_born_heavy_attack: Vec<AnimationFrame>,
 }
 impl Animations {
-    pub fn new() -> Animations {
+    pub fn test() -> Animations {
+        let empty_frame = AnimationFrame {
+            hurt_sircles: vec![ColisionSircle {state: ColisionState::Vulnerable ,colision_shape: Sircle{radius:0.5,position: Vector2{x:0.0,y:0.5}}}],
+            hit_sircles: Vec::new(),
+            events: Vec::new(),
+            texture: Texture{},
+        };
         Animations {
-            idling: Vec::new(),
+            idling: vec![empty_frame],
             running: Vec::new(),
             jump: Vec::new(),
             rizing: Vec::new(),
@@ -53,7 +60,7 @@ pub struct Character {
     animations: Animations,
 }
 impl Character {
-    pub fn new() -> Character {
+    fn new() -> Character {
         Character {
             id: 0,
             name: String::new(),
@@ -62,10 +69,13 @@ impl Character {
             aceleration: 10.0,
             max_speed: 5.0,
             colider: Sircle {radius: 0.3, position: Vector2{x:0.0,y:0.3}},
-            animations: Animations::new(),
+            animations: Animations::test(),
         }
     }
     pub fn load(char_id: u32) -> Character {
+        if char_id == 0 {
+            return Self::new();
+        }
         todo!();
     }
     pub fn load_all() -> HashMap<u32,Character> {
@@ -74,7 +84,7 @@ impl Character {
 }
 #[derive(Serialize, Deserialize, Clone)]
 pub struct CharacterInstance {
-    character: Option<u32>,
+    pub character: Option<u32>,
     object_id: usize,
 
     position: Vector2,
@@ -87,11 +97,14 @@ pub struct CharacterInstance {
     damage: f32,
 
     animation: AnimationState,
+
+    #[serde(skip_serializing,skip_deserializing)]
+    input: CharacterInput
 }
 impl CharacterInstance {
-    pub fn new() -> CharacterInstance {
+    pub fn new(character: Option<u32>) -> CharacterInstance {
         CharacterInstance {
-            character: None,
+            character,
             object_id: 0,
 
             position: Vector2::ZERO,
@@ -102,6 +115,15 @@ impl CharacterInstance {
             state: State::Actionable,
             damage: 0.0,
             animation: AnimationState::Idling(1),
+
+            input: CharacterInput::new(),
+        }
+    }
+    pub fn update(&mut self, char_sheet: &Character) {
+        match self.input.dir.clone() {
+            Some(Direction::Left) => {self.position.x -= 0.2},
+            Some(Direction::Right) => {self.position.x += 0.2},
+            None => {},
         }
     }
     fn draw(&self,char_sheet: &HashMap<u32,Character>,offset: Vector2) {

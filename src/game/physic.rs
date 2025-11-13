@@ -13,8 +13,8 @@ pub enum ColisionState {
 }
 #[derive(Serialize, Deserialize, Clone)]
 pub struct ColisionSircle {
-    colision_shape: Sircle,
-    state: ColisionState,
+    pub colision_shape: Sircle,
+    pub state: ColisionState,
 }
 #[derive(Serialize, Deserialize, Clone)]
 pub struct HitSircle {
@@ -22,7 +22,7 @@ pub struct HitSircle {
     impact_events: Vec<FrameEvent>
 }
 #[derive(Serialize, Deserialize, Clone)]
-enum FrameEvent{
+pub enum FrameEvent{
 
     SetVelocity(Vector2),
     AddVelocity(Vector2),
@@ -57,7 +57,7 @@ pub enum AnimationState {
     AirBornLightAttack(usize),
     AirBornHeavyAttack(usize),
 }
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Debug,Serialize, Deserialize, Clone)]
 pub enum Direction {
     Left,
     Right,

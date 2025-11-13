@@ -17,5 +17,3 @@ impl Renderable for Texture {
         todo!()
     }
 }
-
- 

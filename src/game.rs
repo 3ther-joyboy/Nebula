@@ -23,18 +23,20 @@ use std::{
 };
 
 pub struct Player {
-    id: Uuid,
+    id: String,
     last_ping: usize,
     name: String,
-    instance: Option<usize>,   
+    instance: Option<u32>,   
+    input: CharacterInput,
 }
 impl Player {
     pub fn new(name: String) -> Player {
         Player {
-            id: Uuid::new_v4(),
+            id: Uuid::new_v4().to_string(),
             last_ping: 0,
             name,
             instance: None,
+            input: CharacterInput::new(),
         }
     }
 }
@@ -43,17 +45,19 @@ pub struct Game {
     addres: String,
 
     characters: HashMap<u32,Character>,
-    players: Arc<Mutex<Vec<Player>>>,
+    players: Arc<Mutex<HashMap<String,Player>>>,
+
     map: Arc<Mutex<Option<Map>>>,
 }
 impl Game {
     pub fn default() -> Game {
+        let mut characters: HashMap<u32,Character> = HashMap::new();
+        characters.insert(0,Character::load(0));
         Game {
             password: String::from(""),
             addres: String::from("127.0.0.1:3621"),
-            // characters: Character::load_all(),
-            characters: HashMap::new(),
-            players: Arc::new(Vec::new().into()),
+            characters,
+            players: Arc::new(HashMap::new().into()),
             // map: Arc::new(None.into()),
             map: Arc::new(Some(Map::test()).into()),
         }
@@ -63,7 +67,7 @@ impl Game {
             password,
             addres,
             characters: Character::load_all(),
-            players: Arc::new(Vec::new().into()),
+            players: Arc::new(HashMap::new().into()),
             map: Arc::new(None.into()),
         }
     }
@@ -72,21 +76,23 @@ impl Game {
             .expect("Binding addres was unsucesfull");
 
         let (map_pointer,player_pointer) = (Arc::clone(&self.map),Arc::clone(&self.players));
+        let password = self.password.clone();
 
         let network = thread::spawn(move ||
             for stream_er in listener.incoming() {
                 let stream = stream_er.unwrap();
-                Self::handle_connection(stream,&map_pointer,&player_pointer);
+                Self::handle_connection(stream,&map_pointer,&player_pointer,&password);
             }
         );
         println!("Threded");
 
         loop {
-            thread::sleep(Duration::from_millis(1000));
+            thread::sleep(Duration::from_millis(50));
             loop {
                 if let Ok(ref mut map_opt) = self.map.try_lock() &&
                     let Some(map) = &mut **map_opt {
                         map.counter += 1;
+                        map.update(&self.characters);
                         break;
 
                 }
@@ -94,29 +100,50 @@ impl Game {
         }
         unreachable!();
     }
-    fn handle_connection(mut stream: TcpStream,map_ref: &Arc<Mutex<Option<Map>>>,players_ref: &Arc<Mutex<Vec<Player>>>) {
-        let buf_reader = BufReader::new(&stream);
-        let binding = buf_reader.lines().next().unwrap().unwrap();
-        let rq_line: Vec<&str> = binding.split_whitespace().collect();
+    fn get_map_res(map_ref: &Arc<Mutex<Option<Map>>>) -> Response {
+        loop {
+            if let Ok(map) = map_ref.try_lock() {
+                if let Some(out) = (*map).clone() {
+                    break Response::new(ResponseStatus::Ok,BodyType::JSON, &out.to_string());
+                } else {
+                    break Response::new(ResponseStatus::Ok,BodyType::JSON,"{}");
+                }
+            }
+        }
+    }
+    fn handle_connection(mut stream: TcpStream,map_ref: &Arc<Mutex<Option<Map>>>,players_ref: &Arc<Mutex<HashMap<String,Player>>>, password: &String) {
+        let mut buf_reader = BufReader::new(&stream).lines();
+        let first_line = buf_reader.next().unwrap().unwrap();
+        dbg!(&first_line);
+        let rq_line: Vec<&str> = first_line.split_whitespace().collect();
 
-        dbg!(&rq_line);
         const GET: &&str = &"GET";
+        const PUT: &&str = &"PUT";
+        const POST: &&str = &"POST";
         let response = 
             if let (Some(one),Some(two)) = (rq_line.get(0),rq_line.get(1)) {
                 match (one,two) {
                     (GET,&"/") => Response::new(ResponseStatus::Ok,BodyType::HTML, "<head><meta http-equiv=\"refresh\" content=\"0; url=https://github.com/3ther-joyboy/Nebula\" />"),
-                    (GET,&"/map/") => {
-                        loop {
-                            if let Ok(map) = map_ref.try_lock() {
-                                if let Some(out) = (*map).clone() {
-                                    break Response::new(ResponseStatus::Ok,BodyType::JSON, &out.to_string());
+                    (POST,&"/map/") => {
+                        let some = get_responce::<JoinRequest>(&mut buf_reader).unwrap();
+                        todo!();
+                    },
+                    (PUT,&"/map/") => {
+                        let input = get_responce::<GameControlPacket>(&mut buf_reader).unwrap();
+                        let out = loop {
+                            if let Ok(ref mut players) = players_ref.try_lock(){
+                                if let Some(player) = players.get_mut(&input.player) {
+                                   break Self::get_map_res(&map_ref);
                                 } else {
-                                    break Response::new(ResponseStatus::Ok,BodyType::JSON,"{}");
+                                    let err = String::from("something");
+                                    break Response::new(ResponseStatus::Forbiden,BodyType::JSON,"");
                                 }
                             }
-                        }
+                        };
+                        out
+                        
                     },
-                    // (&"CONNECT",&"/map/") => {},
+                    (GET,&"/map/") => Self::get_map_res(&map_ref),
                     (_,_) => Response::new(ResponseStatus::None,BodyType::JSON,""),
                 }
             } else {

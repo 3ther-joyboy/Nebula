@@ -1,9 +1,32 @@
 use chrono::{Utc,DateTime,Datelike};
+use std::fmt::Display;
+use std::io::BufReader;
+use std::net::TcpStream;
+use crate::game::physic::Direction;
+use serde::{
+    Serialize,
+    Deserialize,
+};
+
+pub fn get_responce<T: for<'a> Deserialize<'a>>(lines: &mut std::io::Lines<BufReader<&TcpStream>>) -> Option<T> {
+    while let Some(Ok(x)) = lines.next() && !x.trim().is_empty() {
+    }
+    let mut obj_str = String::new();
+    while let Some(Ok(x)) = lines.next() && !x.trim().is_empty(){
+        obj_str.push_str(&x);
+
+        if let Ok(output) = serde_json::from_str::<T>(format!("{obj_str}}}").as_str()) {
+            return Some(output);
+        }
+    }
+    None
+}
 
 pub enum ResponseStatus {
     Ok,
     Error(String),
     None,
+    Forbiden,
 }
 impl ResponseStatus {
     pub fn to_string(&self) -> String {
@@ -11,6 +34,7 @@ impl ResponseStatus {
             ResponseStatus::Ok => String::from("HTTP/1.1 200 OK"),
             ResponseStatus::Error(msg) => format!("HTTP/1.1 500 {msg}"),
             ResponseStatus::None => String::from("HTTP/1.1 404 NOT FOUND"),
+            ResponseStatus::Forbiden => String::from("HTTP/1.1 403 FORBIDEN ERROR"),
         }
     }
 }
@@ -70,5 +94,66 @@ Content-Type: {body_type}
 
 {contents}"
         )
+    }
+}
+#[derive(Debug,Default,Serialize, Deserialize, Clone)]
+pub struct CharacterInput {
+    pub dir: Option<Direction>,
+    pub light_attack: bool,
+    pub heavy_attack: bool,
+    pub special: bool,
+    pub jump: bool,
+}
+impl CharacterInput {
+    pub fn new() -> CharacterInput {
+        CharacterInput {
+            dir: Option::None,
+            light_attack: false,
+            heavy_attack: false,
+            special: false,
+            jump: false,
+        }
+    } 
+}
+#[derive(Debug,Default,Serialize, Deserialize, Clone)]
+pub struct GameControlPacket {
+    pub input: CharacterInput,
+    pub server_password: String,
+    pub player: String,
+}
+impl GameControlPacket {
+    pub fn new() -> GameControlPacket {
+        GameControlPacket {
+            input: CharacterInput::new(),
+            server_password: String::from("lorem ipsum"),
+            player: String::from("franta"),
+        }
+    }
+    pub fn to_string(&self) -> String {
+        serde_json::to_string(self).unwrap()
+    }
+    pub fn from_string(input: String) -> Option<GameControlPacket> {
+        if let Ok(output) = serde_json::from_str::<Self>(input.as_str()) {
+            Some(output)
+        } else {
+            None
+        }
+    }
+} 
+#[derive(Debug,Default,Serialize, Deserialize, Clone)]
+pub struct JoinRequest {
+    pub server_password: String,
+    pub player_name: String,
+}
+impl JoinRequest {
+    pub fn to_string(&self) -> String {
+        serde_json::to_string(self).unwrap()
+    }
+    pub fn from_string(input: String) -> Option<Self> {
+        if let Ok(output) = serde_json::from_str::<Self>(input.as_str()) {
+            Some(output)
+        } else {
+            None
+        }
     }
 }
