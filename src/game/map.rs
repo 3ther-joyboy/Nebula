@@ -9,26 +9,10 @@ use crate::{
     game::Character,
 };
 
-pub struct Player {
-    id: Uuid,
-    last_ping: usize,
-    name: String,
-    instance: Option<usize>,   
-}
-impl Player {
-    pub fn new(name: String) -> Player {
-        Player {
-            id: Uuid::new_v4(),
-            last_ping: 0,
-            name,
-            instance: None,
-        }
-    }
-}
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Map {
     pub counter: usize,
-    characters: Vec<CharacterInstance>,
+    characters: HashMap<u32,CharacterInstance>,
     statics: Vec<()>,
 }
 impl Map {
@@ -36,16 +20,26 @@ impl Map {
         serde_json::to_string(self).unwrap()
     }
     pub fn test() -> Map {
+        let mut characters = HashMap::new();
+        characters.insert(0,CharacterInstance::new(Some(0)));
         Map {
             counter: 0,
-            characters: vec![CharacterInstance::new(Some(0))],
+            characters,
             statics: Vec::new(),
         }
     }
+    pub fn set_inputs(&mut self,players: HashMap<String,crate::game::Player>) {
+        for (_,player) in players {
+            if let Some(id) = player.instance && let Some(instance) = &mut self.characters.get_mut(&id) {
+                instance.input = player.input;
+            }
+        }
+    }
     pub fn update(&mut self, char_sheet: &HashMap<u32,Character>) {
-        for player in &mut self.characters {
-            let some = &char_sheet.get(&player.character.unwrap()).unwrap(); // todo!
-            player.update(some);
+        for (_,player) in &mut self.characters {
+            if let Some(id) = player.character && let Some(sheet) = &char_sheet.get(&id) {
+                player.update(sheet);
+            }
         }
     }
 }

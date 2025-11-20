@@ -22,12 +22,13 @@ use std::{
     net::{TcpListener, TcpStream},
 };
 
+#[derive(Clone)]
 pub struct Player {
     id: String,
     last_ping: usize,
     name: String,
     instance: Option<u32>,   
-    input: CharacterInput,
+    pub input: CharacterInput,
 }
 impl Player {
     pub fn new(name: String) -> Player {
@@ -58,7 +59,7 @@ impl Game {
             addres: String::from("127.0.0.1:3621"),
             characters,
             players: Arc::new(HashMap::new().into()),
-            // map: Arc::new(None.into()),
+            // map: Arc::new(None.into()), todo!();
             map: Arc::new(Some(Map::test()).into()),
         }
     }
@@ -84,14 +85,14 @@ impl Game {
                 Self::handle_connection(stream,&map_pointer,&player_pointer,&password);
             }
         );
-        println!("Threded");
-
         loop {
             thread::sleep(Duration::from_millis(50));
+            let players_input = Self::players_clone(&self.players);
             loop {
                 if let Ok(ref mut map_opt) = self.map.try_lock() &&
                     let Some(map) = &mut **map_opt {
                         map.counter += 1;
+                        map.set_inputs(players_input);
                         map.update(&self.characters);
                         break;
 
@@ -100,56 +101,63 @@ impl Game {
         }
         unreachable!();
     }
-    fn get_map_res(map_ref: &Arc<Mutex<Option<Map>>>) -> Response {
-        loop {
-            if let Ok(map) = map_ref.try_lock() {
-                if let Some(out) = (*map).clone() {
-                    break Response::new(ResponseStatus::Ok,BodyType::JSON, &out.to_string());
-                } else {
-                    break Response::new(ResponseStatus::Ok,BodyType::JSON,"{}");
-                }
+    fn players_clone(players_ref: &Arc<Mutex<HashMap<String,Player>>>) -> HashMap<String,Player> {
+        loop { if let Ok(ref mut players) = players_ref.try_lock(){
+            let out = players.clone();
+            let _ = players.iter_mut().map(|(_,mut p)|{p.last_ping+=1;p.input.reset();});
+            return out;
+        }};
+    }
+    fn update_player(input: GameControlPacket,players_ref: &Arc<Mutex<HashMap<String,Player>>>) -> Result<(),Response> {
+        loop { if let Ok(ref mut players) = players_ref.try_lock(){
+            if let Some(player) = players.get_mut(&input.player) {
+                player.input = input.input;
+                player.last_ping = 0;
+                return Ok(());
+            } else {
+                return Err(Response::status(ResponseStatus::None));
             }
-        }
+        }};
+    }
+    fn get_map_res(map_ref: &Arc<Mutex<Option<Map>>>) -> Response {
+        loop { if let Ok(map) = map_ref.try_lock() {
+            if let Some(out) = (*map).clone() {
+                break Response::new(ResponseStatus::Ok,BodyType::JSON, &out.to_string());
+            } else {
+                break Response::status(ResponseStatus::Ok);
+            }
+        }}
     }
     fn handle_connection(mut stream: TcpStream,map_ref: &Arc<Mutex<Option<Map>>>,players_ref: &Arc<Mutex<HashMap<String,Player>>>, password: &String) {
-        let mut buf_reader = BufReader::new(&stream).lines();
-        let first_line = buf_reader.next().unwrap().unwrap();
-        dbg!(&first_line);
-        let rq_line: Vec<&str> = first_line.split_whitespace().collect();
+        let headers = Headers::new(&mut stream);
 
-        const GET: &&str = &"GET";
-        const PUT: &&str = &"PUT";
-        const POST: &&str = &"POST";
+        let matching = (headers.request_type.as_str(),headers.path.as_str());
         let response = 
-            if let (Some(one),Some(two)) = (rq_line.get(0),rq_line.get(1)) {
-                match (one,two) {
-                    (GET,&"/") => Response::new(ResponseStatus::Ok,BodyType::HTML, "<head><meta http-equiv=\"refresh\" content=\"0; url=https://github.com/3ther-joyboy/Nebula\" />"),
-                    (POST,&"/map/") => {
-                        let some = get_responce::<JoinRequest>(&mut buf_reader).unwrap();
-                        todo!();
-                    },
-                    (PUT,&"/map/") => {
-                        let input = get_responce::<GameControlPacket>(&mut buf_reader).unwrap();
-                        let out = loop {
-                            if let Ok(ref mut players) = players_ref.try_lock(){
-                                if let Some(player) = players.get_mut(&input.player) {
-                                   break Self::get_map_res(&map_ref);
-                                } else {
-                                    let err = String::from("something");
-                                    break Response::new(ResponseStatus::Forbiden,BodyType::JSON,"");
-                                }
+            match matching {
+                ("GET","/") => Response::new(ResponseStatus::Ok,BodyType::HTML, "<head><meta http-equiv=\"refresh\" content=\"0; url=https://github.com/3ther-joyboy/Nebula\" />"),
+                ("POST","/map/") => {
+                    let some = get_responce::<JoinRequest>(&mut stream,headers).unwrap();
+                    todo!();
+                },
+                ("PUT","/map/") => {
+                    if let Some(input) = get_responce::<GameControlPacket>(&mut stream,headers){
+                        if *password == input.server_password {
+                            if let Err(error_msg) = Self::update_player(input, &players_ref) {
+                                error_msg
+                            } else {
+                                Self::get_map_res(&map_ref)
                             }
-                        };
-                        out
-                        
-                    },
-                    (GET,&"/map/") => Self::get_map_res(&map_ref),
-                    (_,_) => Response::new(ResponseStatus::None,BodyType::JSON,""),
-                }
-            } else {
-                Response::new(ResponseStatus::Error("REQUEST OR PATH NOT FOUND".to_string()),BodyType::JSON,"")
-            };
+                        } else {
+                            Response::status(ResponseStatus::Forbiden)
+                        }
+                    } else {
+                        Response::status(ResponseStatus::ParseError)
+                    }
 
+                },
+                ("GET","/map/") => Self::get_map_res(&map_ref),
+                (_,_) => Response::new(ResponseStatus::None,BodyType::JSON,""),
+            };
         stream.write_all(response.to_string().as_bytes()).unwrap();
     }
 }

@@ -2,20 +2,81 @@ use chrono::{Utc,DateTime,Datelike};
 use std::fmt::Display;
 use std::io::BufReader;
 use std::net::TcpStream;
+use std::io::BufRead;
+use std::io::Lines;
 use crate::game::physic::Direction;
 use serde::{
     Serialize,
     Deserialize,
 };
+use std::io::Read;
 
-pub fn get_responce<T: for<'a> Deserialize<'a>>(lines: &mut std::io::Lines<BufReader<&TcpStream>>) -> Option<T> {
-    while let Some(Ok(x)) = lines.next() && !x.trim().is_empty() {
+#[derive(Debug)]
+pub struct Headers {
+    pub request_type: String,
+    pub path: String,
+    pub http_type: Option<String>,
+
+    pub content_type: Option<String>,
+    pub user_agent: Option<String>,
+    pub body_length: usize,
+}
+impl Headers {
+    pub fn none() -> Headers {
+        Headers {
+            request_type: String::from("GET"),
+            path: String::from("/"),
+            http_type: None,
+            content_type: None,
+            user_agent: None,
+            body_length: 0,
+        }
     }
-    let mut obj_str = String::new();
-    while let Some(Ok(x)) = lines.next() && !x.trim().is_empty(){
-        obj_str.push_str(&x);
+    pub fn new(stream: &mut TcpStream) -> Headers {
+        let mut out = Self::none();
+        if let Some(line) = get_line(stream) {
+            let rq_line: Vec<String> = line.split_whitespace().map(|x|String::from(x)).collect();
+            if let Some(word) = rq_line.get(0) {
+                out.request_type = word.to_string();
+            } 
+            if let Some(word) = rq_line.get(1) {
+                out.path = word.to_string();
+            }
+            out.http_type = rq_line.get(2).cloned();
+        }
+        while let Some(line) = get_line(stream) && line.len() > 1 {
+            let rq_line: Vec<String> = line.split_whitespace().map(|x|String::from(x)).collect();
 
-        if let Ok(output) = serde_json::from_str::<T>(format!("{obj_str}}}").as_str()) {
+            if let Some(word) = rq_line.get(0) {
+                match word.as_str() {
+                    "Content-Type:" => {out.content_type = rq_line.get(1).cloned();}
+                    "Content-Length:" => {
+                        if let Some(word) = rq_line.get(1) && let Ok(number) = word.parse::<usize>(){
+                            out.body_length = number+1;
+                        }
+                    }
+                    _ => {},
+                }
+            }
+
+        }
+        out
+    }
+}
+pub fn get_line(stream: &mut TcpStream) -> Option<String> {
+    let mut line = String::new();
+    let mut buffer = [0;1];
+    while let Ok(_) = stream.read_exact(&mut buffer) && let Ok(character) = str::from_utf8(&buffer) {
+        if buffer[0] == b'\n' {return Some(line);}
+        line.push_str(character)
+    }
+    None
+}
+pub fn get_responce<T: for<'a> Deserialize<'a>>(stream: &mut TcpStream, headers: Headers) -> Option<T> {
+    let mut line = String::new();
+    let mut buffer = vec![0;headers.body_length-1];
+    if let Ok(_) = stream.read_exact(&mut buffer) && let Ok(obj_str) = str::from_utf8(&buffer) {
+        if let Ok(output) = serde_json::from_str::<T>(obj_str) {
             return Some(output);
         }
     }
@@ -24,18 +85,20 @@ pub fn get_responce<T: for<'a> Deserialize<'a>>(lines: &mut std::io::Lines<BufRe
 
 pub enum ResponseStatus {
     Ok,
-    Error(String),
+    Error,
+    ParseError,
     None,
     Forbiden,
 }
 impl ResponseStatus {
     pub fn to_string(&self) -> String {
-        match self {
-            ResponseStatus::Ok => String::from("HTTP/1.1 200 OK"),
-            ResponseStatus::Error(msg) => format!("HTTP/1.1 500 {msg}"),
-            ResponseStatus::None => String::from("HTTP/1.1 404 NOT FOUND"),
-            ResponseStatus::Forbiden => String::from("HTTP/1.1 403 FORBIDEN ERROR"),
-        }
+        format!("HTTP/1.1 {}", match self {
+            ResponseStatus::Ok => "200 OK",
+            ResponseStatus::Forbiden => "403 FORBIDEN ERROR",
+            ResponseStatus::None => "404 NOT FOUND",
+            ResponseStatus::Error => "500 SERVER ERROR",
+            ResponseStatus::ParseError => "501 PARSE ERROR",
+        })
     }
 }
 pub enum BodyType {
@@ -67,6 +130,9 @@ impl Response {
             body_type,
             body: body.to_string(),
         }
+    }
+    pub fn status(err: ResponseStatus) -> Response {
+        Self::new(err,BodyType::JSON,"")
     }
     pub fn to_string(&self) -> String {
         let status = self.status.to_string();
@@ -114,6 +180,12 @@ impl CharacterInput {
             jump: false,
         }
     } 
+    pub fn reset(&mut self) {
+        self.light_attack = false;
+        self.heavy_attack = false;
+        self.special = false;
+        self.jump = false;
+    }
 }
 #[derive(Debug,Default,Serialize, Deserialize, Clone)]
 pub struct GameControlPacket {

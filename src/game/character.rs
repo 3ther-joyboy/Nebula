@@ -99,7 +99,7 @@ pub struct CharacterInstance {
     animation: AnimationState,
 
     #[serde(skip_serializing,skip_deserializing)]
-    input: CharacterInput
+    pub input: CharacterInput
 }
 impl CharacterInstance {
     pub fn new(character: Option<u32>) -> CharacterInstance {
@@ -119,10 +119,10 @@ impl CharacterInstance {
             input: CharacterInput::new(),
         }
     }
-    pub fn update(&mut self, char_sheet: &Character) {
+    pub fn update(&mut self, _char_sheet: &Character) {
         match self.input.dir.clone() {
-            Some(Direction::Left) => {self.position.x -= 0.2},
-            Some(Direction::Right) => {self.position.x += 0.2},
+            Some(Direction::Left) => {self.position.x -= 1.0},
+            Some(Direction::Right) => {self.position.x += 1.0},
             None => {},
         }
     }
