@@ -2,7 +2,12 @@ pub mod client;
 pub mod base;
 pub mod game;
 
+use std::thread;
+
 fn main() {
-    game::Game::default().start();
+
+
+    let server = thread::spawn(||game::Game::default().start());
+    client::Client::default().start();
 }
 

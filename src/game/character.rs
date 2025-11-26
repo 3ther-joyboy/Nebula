@@ -84,8 +84,8 @@ impl Character {
 }
 #[derive(Serialize, Deserialize, Clone)]
 pub struct CharacterInstance {
-    pub character: Option<u32>,
-    object_id: usize,
+    pub character: u32,
+    object_id: u32,
 
     position: Vector2,
     velocity: Vector2,
@@ -102,7 +102,7 @@ pub struct CharacterInstance {
     pub input: CharacterInput
 }
 impl CharacterInstance {
-    pub fn new(character: Option<u32>) -> CharacterInstance {
+    pub fn new(character: u32,id: u32) -> CharacterInstance {
         CharacterInstance {
             character,
             object_id: 0,
@@ -120,31 +120,28 @@ impl CharacterInstance {
         }
     }
     pub fn update(&mut self, _char_sheet: &Character) {
+        println!("updatee");
         match self.input.dir.clone() {
-            Some(Direction::Left) => {self.position.x -= 1.0},
-            Some(Direction::Right) => {self.position.x += 1.0},
+            Some(Direction::Left) => {println!("aa");self.position.x -= 1.0},
+            Some(Direction::Right) => {println!("aa");self.position.x += 1.0},
             None => {},
         }
     }
     fn draw(&self,char_sheet: &HashMap<u32,Character>,offset: Vector2) {
-        if let Some(char_sheet_id) = self.character {
-            let anim_tree = &char_sheet.get(&char_sheet_id)
-                .expect("Character by ID: {char_sheet_id} not found.\nTrying to render unknow character.")
-                .animations;
-            let position = offset + self.position.clone();
-            match self.animation {
-                AnimationState::Idling(frame) => anim_tree.idling[frame].texture.draw_on(position),
-                AnimationState::Running(frame) => anim_tree.running[frame].texture.draw_on(position),
-                AnimationState::Jump(frame) => anim_tree.jump[frame].texture.draw_on(position),
-                AnimationState::Rizing(frame) => anim_tree.rizing[frame].texture.draw_on(position),
-                AnimationState::Falling(frame) => anim_tree.falling[frame].texture.draw_on(position),
-                AnimationState::LightAttack(frame) => anim_tree.light_attack[frame].texture.draw_on(position),
-                AnimationState::HeavyAttack(frame) => anim_tree.heavy_attack[frame].texture.draw_on(position),
-                AnimationState::AirBornLightAttack(frame) => anim_tree.air_born_light_attack[frame].texture.draw_on(position),
-                AnimationState::AirBornHeavyAttack(frame) => anim_tree.air_born_heavy_attack[frame].texture.draw_on(position),
-            }
-        } else {
-            panic!("You are trying to render instance of a player without character definition");
+        let anim_tree = &char_sheet.get(&self.character)
+            .expect("Character by ID: {char_sheet_id} not found.\nTrying to render unknow character.")
+            .animations;
+        let position = offset + self.position.clone();
+        match self.animation {
+            AnimationState::Idling(frame) => anim_tree.idling[frame].texture.draw_on(position),
+            AnimationState::Running(frame) => anim_tree.running[frame].texture.draw_on(position),
+            AnimationState::Jump(frame) => anim_tree.jump[frame].texture.draw_on(position),
+            AnimationState::Rizing(frame) => anim_tree.rizing[frame].texture.draw_on(position),
+            AnimationState::Falling(frame) => anim_tree.falling[frame].texture.draw_on(position),
+            AnimationState::LightAttack(frame) => anim_tree.light_attack[frame].texture.draw_on(position),
+            AnimationState::HeavyAttack(frame) => anim_tree.heavy_attack[frame].texture.draw_on(position),
+            AnimationState::AirBornLightAttack(frame) => anim_tree.air_born_light_attack[frame].texture.draw_on(position),
+            AnimationState::AirBornHeavyAttack(frame) => anim_tree.air_born_heavy_attack[frame].texture.draw_on(position),
         }
     }
 }

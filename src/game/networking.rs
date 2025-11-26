@@ -86,18 +86,22 @@ pub fn get_responce<T: for<'a> Deserialize<'a>>(stream: &mut TcpStream, headers:
 pub enum ResponseStatus {
     Ok,
     Error,
+    Unauthorized,
     ParseError,
     None,
     Forbiden,
+    NotImplemented,
 }
 impl ResponseStatus {
     pub fn to_string(&self) -> String {
         format!("HTTP/1.1 {}", match self {
             ResponseStatus::Ok => "200 OK",
+            ResponseStatus::ParseError => "400 PARSE ERROR",
+            ResponseStatus::Unauthorized => "401 UNAUTHORIZED",
             ResponseStatus::Forbiden => "403 FORBIDEN ERROR",
             ResponseStatus::None => "404 NOT FOUND",
             ResponseStatus::Error => "500 SERVER ERROR",
-            ResponseStatus::ParseError => "501 PARSE ERROR",
+            ResponseStatus::NotImplemented => "501 NOT IMPLEMENTED",
         })
     }
 }
@@ -194,11 +198,11 @@ pub struct GameControlPacket {
     pub player: String,
 }
 impl GameControlPacket {
-    pub fn new() -> GameControlPacket {
+    pub fn new(server_password: String, player: String) -> GameControlPacket {
         GameControlPacket {
             input: CharacterInput::new(),
-            server_password: String::from("lorem ipsum"),
-            player: String::from("franta"),
+            server_password,
+            player,
         }
     }
     pub fn to_string(&self) -> String {
@@ -212,6 +216,12 @@ impl GameControlPacket {
         }
     }
 } 
+#[derive(Debug,Default,Serialize, Deserialize, Clone)]
+pub struct CharacterSwitchRequest {
+    pub server_password: String,
+    pub player_name: String,
+    pub character: Option<u32>,
+}
 #[derive(Debug,Default,Serialize, Deserialize, Clone)]
 pub struct JoinRequest {
     pub server_password: String,

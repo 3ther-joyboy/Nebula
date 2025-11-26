@@ -1,7 +1,7 @@
 pub mod character;
 pub mod map;
-pub mod physic;
-mod networking;
+pub mod networking;
+mod physic;
 
 use serde::{Serialize, Deserialize};
 use std::sync::{Arc, Mutex};
@@ -108,6 +108,16 @@ impl Game {
             return out;
         }};
     }
+    fn new_player(input: JoinRequest,players_ref: &Arc<Mutex<HashMap<String,Player>>>) -> Result<(),Response> {
+        loop { if let Ok(ref mut players) = players_ref.try_lock(){
+            if let Option::None = players.get(&input.player_name) {
+                players.insert(input.player_name.clone(),Player::new(input.player_name));
+                return Ok(());
+            } else {
+                return Err(Response::status(ResponseStatus::Forbiden));
+            }
+        }};
+    }
     fn update_player(input: GameControlPacket,players_ref: &Arc<Mutex<HashMap<String,Player>>>) -> Result<(),Response> {
         loop { if let Ok(ref mut players) = players_ref.try_lock(){
             if let Some(player) = players.get_mut(&input.player) {
@@ -118,6 +128,68 @@ impl Game {
                 return Err(Response::status(ResponseStatus::None));
             }
         }};
+    }
+    fn player_switch_char(character: Option<u32>, player_name: String ,map_ref: &Arc<Mutex<Option<Map>>>, players_ref: &Arc<Mutex<HashMap<String,Player>>>) -> Result<(),Response> {
+        let instance_id_op = loop { if let Ok(ref mut players) = players_ref.try_lock(){
+            if let Some(player) = players.get_mut(&player_name) {
+                player.last_ping = 0;
+                break player.instance;
+            } else {
+                return Err(Response::status(ResponseStatus::Unauthorized));
+            }
+        }};
+        let current_character_id = loop { if let Ok(ref mut map_op) = map_ref.try_lock() {
+            if let Some(map) = &**map_op {
+                if let Some(id) = instance_id_op && let Some(instance) = map.characters.get(&id) {
+                    break Some(instance.character);
+                } else {
+                    break Option::None;
+                }
+            }else{return Err(Response::status(ResponseStatus::NotImplemented));}
+        }};
+
+        match (current_character_id,character) {
+            (Option::None,Option::Some(new_id)) => {
+                let new_object_id = loop { if let Ok(ref mut map_op) = map_ref.try_lock() {
+                    if let Some(map) = &mut **map_op {
+                        break map.new_istance(new_id);
+                    }else{return Err(Response::status(ResponseStatus::Error));}
+                }};
+                loop { if let Ok(ref mut players) = players_ref.try_lock(){
+                    if let Some(player) = players.get_mut(&player_name) {
+                        player.instance = Some(new_object_id);
+                        break;
+                    } else {
+                        return Err(Response::status(ResponseStatus::Error));
+                    }
+                }}
+            },
+            (Option::Some(_),Option::None) => {
+                loop { if let Ok(ref mut map_op) = map_ref.try_lock() {
+                    if let Some(map) = &mut **map_op && let Some(id) = instance_id_op {
+                        map.characters.remove(&id);
+                        break;
+                    }else{return Err(Response::status(ResponseStatus::Error));}
+                }}
+                loop { if let Ok(ref mut players) = players_ref.try_lock(){
+                    if let Some(player) = players.get_mut(&player_name) {
+                        player.instance = Option::None;
+                        break;
+                    } else {
+                        return Err(Response::status(ResponseStatus::Error));
+                    }
+                }}
+            },
+            (Option::Some(_),Option::Some(new_id)) => 
+                loop { if let Ok(ref mut map_op) = map_ref.try_lock() {
+                    if let Some(map) = &mut **map_op && let Some(instance_id) = instance_id_op && let Some(char_instance) = map.characters.get_mut(&instance_id) {
+                        char_instance.character = new_id;
+                        break;
+                    }else{return Err(Response::status(ResponseStatus::Error));}
+                }},
+            (Option::None,Option::None) => {},
+        }
+        Ok(())
     }
     fn get_map_res(map_ref: &Arc<Mutex<Option<Map>>>) -> Response {
         loop { if let Ok(map) = map_ref.try_lock() {
@@ -135,28 +207,32 @@ impl Game {
         let response = 
             match matching {
                 ("GET","/") => Response::new(ResponseStatus::Ok,BodyType::HTML, "<head><meta http-equiv=\"refresh\" content=\"0; url=https://github.com/3ther-joyboy/Nebula\" />"),
-                ("POST","/map/") => {
-                    let some = get_responce::<JoinRequest>(&mut stream,headers).unwrap();
-                    todo!();
-                },
-                ("PUT","/map/") => {
+                ("PUT","/character/") => 
+                    if let Some(input) = get_responce::<CharacterSwitchRequest>(&mut stream,headers) {
+                        if *password == input.server_password {
+                            if let Err(out) = Self::player_switch_char(input.character,input.player_name,map_ref,players_ref) {
+                                out
+                            } else {Self::get_map_res(&map_ref)}
+                        }else{Response::status(ResponseStatus::Unauthorized)}
+                    }else{Response::status(ResponseStatus::ParseError)},
+                ("POST","/map/") => 
+                    if let Some(input) = get_responce::<JoinRequest>(&mut stream,headers) {
+                        if *password == input.server_password {
+                            if let Err(error_msg) = Self::new_player(input, &players_ref) {
+                                error_msg
+                            }else{Self::get_map_res(&map_ref)}
+                        }else{Response::status(ResponseStatus::Unauthorized)}
+                    }else{Response::status(ResponseStatus::ParseError)},
+                ("PUT","/map/") => 
                     if let Some(input) = get_responce::<GameControlPacket>(&mut stream,headers){
                         if *password == input.server_password {
                             if let Err(error_msg) = Self::update_player(input, &players_ref) {
                                 error_msg
-                            } else {
-                                Self::get_map_res(&map_ref)
-                            }
-                        } else {
-                            Response::status(ResponseStatus::Forbiden)
-                        }
-                    } else {
-                        Response::status(ResponseStatus::ParseError)
-                    }
-
-                },
+                            }else{Self::get_map_res(&map_ref)}
+                        }else{Response::status(ResponseStatus::Unauthorized)}
+                    }else{Response::status(ResponseStatus::ParseError)},
                 ("GET","/map/") => Self::get_map_res(&map_ref),
-                (_,_) => Response::new(ResponseStatus::None,BodyType::JSON,""),
+                (_,_) => Response::status(ResponseStatus::None),
             };
         stream.write_all(response.to_string().as_bytes()).unwrap();
     }
