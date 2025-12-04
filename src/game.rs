@@ -1,9 +1,8 @@
 pub mod character;
 pub mod map;
 pub mod networking;
-mod physic;
+pub mod physic;
 
-use serde::{Serialize, Deserialize};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
@@ -17,12 +16,12 @@ use crate::game::{
 
 };
 use std::{
-    fs,
-    io::{BufReader, prelude::*},
+    io::prelude::*,
     net::{TcpListener, TcpStream},
 };
 
 #[derive(Clone)]
+#[allow(dead_code)]
 pub struct Player {
     id: String,
     last_ping: usize,
@@ -45,21 +44,18 @@ pub struct Game {
     password: String,
     addres: String,
 
-    characters: HashMap<u32,Character>,
     players: Arc<Mutex<HashMap<String,Player>>>,
+    characters: HashMap<u32,Character>,
 
     map: Arc<Mutex<Option<Map>>>,
 }
 impl Game {
     pub fn default() -> Game {
-        let mut characters: HashMap<u32,Character> = HashMap::new();
-        characters.insert(0,Character::load(0));
         Game {
             password: String::from(""),
             addres: String::from("127.0.0.1:3621"),
-            characters,
+            characters: Character::load_all(),
             players: Arc::new(HashMap::new().into()),
-            // map: Arc::new(None.into()), todo!();
             map: Arc::new(Some(Map::test()).into()),
         }
     }
@@ -79,7 +75,7 @@ impl Game {
         let (map_pointer,player_pointer) = (Arc::clone(&self.map),Arc::clone(&self.players));
         let password = self.password.clone();
 
-        let network = thread::spawn(move ||
+        let _ = thread::spawn(move ||
             for stream_er in listener.incoming() {
                 let stream = stream_er.unwrap();
                 Self::handle_connection(stream,&map_pointer,&player_pointer,&password);
@@ -99,12 +95,11 @@ impl Game {
                 }
             }
         }
-        unreachable!();
     }
     fn players_clone(players_ref: &Arc<Mutex<HashMap<String,Player>>>) -> HashMap<String,Player> {
         loop { if let Ok(ref mut players) = players_ref.try_lock(){
             let out = players.clone();
-            let _ = players.iter_mut().map(|(_,mut p)|{p.last_ping+=1;p.input.reset();});
+            let _ = players.iter_mut().map(|(_,p)|{p.last_ping+=1;p.input.reset();});
             return out;
         }};
     }
@@ -223,14 +218,14 @@ impl Game {
                             }else{Self::get_map_res(&map_ref)}
                         }else{Response::status(ResponseStatus::Unauthorized)}
                     }else{Response::status(ResponseStatus::ParseError)},
-                ("PUT","/map/") => 
+                ("PUT","/map/") => {
                     if let Some(input) = get_responce::<GameControlPacket>(&mut stream,headers){
                         if *password == input.server_password {
                             if let Err(error_msg) = Self::update_player(input, &players_ref) {
                                 error_msg
                             }else{Self::get_map_res(&map_ref)}
                         }else{Response::status(ResponseStatus::Unauthorized)}
-                    }else{Response::status(ResponseStatus::ParseError)},
+                    }else{Response::status(ResponseStatus::ParseError)}},
                 ("GET","/map/") => Self::get_map_res(&map_ref),
                 (_,_) => Response::status(ResponseStatus::None),
             };

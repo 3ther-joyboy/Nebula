@@ -4,10 +4,12 @@ pub mod game;
 
 use std::thread;
 
+#[macro_use]
+extern crate glium;
 fn main() {
 
 
-    let server = thread::spawn(||game::Game::default().start());
-    client::Client::default().start();
+    let _ = thread::spawn(||game::Game::default().start());
+    let _ = client::Client::default().start();
 }
 

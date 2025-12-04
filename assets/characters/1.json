@@ -1,0 +1,44 @@
+{
+    "id": 1,
+    "name": "Franta",
+    "weight": 1,
+    "air_jump_count": 1,
+    "aceleration": 10,
+    "max_speed": 5,
+    "colider": {
+        "radius": 0.3,
+        "position": {
+            "x": 0,
+            "y": 0.3
+        }
+    },
+    "animations": {
+        "idling": [
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.5,
+                            "position": {
+                                "x": 0,
+                                "y": 0.5
+                            }
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "hit_sircles": [],
+                "events": [],
+                "texture": {}
+            }
+        ],
+        "running": [],
+        "jump": [],
+        "rizing": [],
+        "falling": [],
+        "light_attack": [],
+        "heavy_attack": [],
+        "air_born_light_attack": [],
+        "air_born_heavy_attack": []
+    }
+}

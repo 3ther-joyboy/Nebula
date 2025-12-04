@@ -1,9 +1,5 @@
 use chrono::{Utc,DateTime,Datelike};
-use std::fmt::Display;
-use std::io::BufReader;
 use std::net::TcpStream;
-use std::io::BufRead;
-use std::io::Lines;
 use crate::game::physic::Direction;
 use serde::{
     Serialize,
@@ -47,10 +43,11 @@ impl Headers {
         while let Some(line) = get_line(stream) && line.len() > 1 {
             let rq_line: Vec<String> = line.split_whitespace().map(|x|String::from(x)).collect();
 
+
             if let Some(word) = rq_line.get(0) {
                 match word.as_str() {
-                    "Content-Type:" => {out.content_type = rq_line.get(1).cloned();}
-                    "Content-Length:" => {
+                    "Content-Type:" | "content-type:" => {out.content_type = rq_line.get(1).cloned();}
+                    "Content-Length:" | "content-length:"=> {
                         if let Some(word) = rq_line.get(1) && let Ok(number) = word.parse::<usize>(){
                             out.body_length = number+1;
                         }
@@ -73,11 +70,12 @@ pub fn get_line(stream: &mut TcpStream) -> Option<String> {
     None
 }
 pub fn get_responce<T: for<'a> Deserialize<'a>>(stream: &mut TcpStream, headers: Headers) -> Option<T> {
-    let mut line = String::new();
-    let mut buffer = vec![0;headers.body_length-1];
-    if let Ok(_) = stream.read_exact(&mut buffer) && let Ok(obj_str) = str::from_utf8(&buffer) {
-        if let Ok(output) = serde_json::from_str::<T>(obj_str) {
-            return Some(output);
+    if headers.body_length > 0 {
+        let mut buffer = vec![0;headers.body_length-1];
+        if let Ok(_) = stream.read_exact(&mut buffer) && let Ok(obj_str) = str::from_utf8(&buffer) {
+            if let Ok(output) = serde_json::from_str::<T>(obj_str) {
+                return Some(output);
+            }
         }
     }
     None
@@ -175,6 +173,9 @@ pub struct CharacterInput {
     pub jump: bool,
 }
 impl CharacterInput {
+    pub fn to_string(&self) -> String {
+        serde_json::to_string(self).unwrap()
+    }
     pub fn new() -> CharacterInput {
         CharacterInput {
             dir: Option::None,
@@ -198,9 +199,9 @@ pub struct GameControlPacket {
     pub player: String,
 }
 impl GameControlPacket {
-    pub fn new(server_password: String, player: String) -> GameControlPacket {
+    pub fn new(server_password: String, player: String,input: CharacterInput) -> GameControlPacket {
         GameControlPacket {
-            input: CharacterInput::new(),
+            input,
             server_password,
             player,
         }
@@ -222,12 +223,37 @@ pub struct CharacterSwitchRequest {
     pub player_name: String,
     pub character: Option<u32>,
 }
+impl CharacterSwitchRequest {
+    pub fn new(server_password: String, player_name: String, character: Option<u32>) -> CharacterSwitchRequest {
+        CharacterSwitchRequest {
+            server_password,
+            player_name,
+            character,
+        }
+    }
+    pub fn to_string(&self) -> String {
+        serde_json::to_string(self).unwrap()
+    }
+    pub fn from_string(input: String) -> Option<Self> {
+        if let Ok(output) = serde_json::from_str::<Self>(input.as_str()) {
+            Some(output)
+        } else {
+            None
+        }
+    }
+}
 #[derive(Debug,Default,Serialize, Deserialize, Clone)]
 pub struct JoinRequest {
     pub server_password: String,
     pub player_name: String,
 }
 impl JoinRequest {
+    pub fn new(server_password: String, player_name: String) -> JoinRequest {
+        JoinRequest {
+            server_password,
+            player_name,
+        }
+    }
     pub fn to_string(&self) -> String {
         serde_json::to_string(self).unwrap()
     }

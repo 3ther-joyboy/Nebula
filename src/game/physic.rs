@@ -59,8 +59,8 @@ pub enum AnimationState {
 }
 #[derive(Debug,Serialize, Deserialize, Clone)]
 pub enum Direction {
-    Left,
-    Right,
+    Left = 1,
+    Right = -1,
 }
 #[derive(Serialize, Deserialize, Clone)]
 pub enum State {
