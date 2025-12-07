@@ -48,24 +48,27 @@ pub struct Game {
     characters: HashMap<u32,Character>,
 
     map: Arc<Mutex<Option<Map>>>,
+    refresh_rate: u32,
 }
 impl Game {
     pub fn default() -> Game {
         Game {
             password: String::from(""),
             addres: String::from("127.0.0.1:3621"),
-            characters: Character::load_all(),
+            characters: Character::load_all(Option::None),
             players: Arc::new(HashMap::new().into()),
             map: Arc::new(Some(Map::test()).into()),
+            refresh_rate: 50,
         }
     }
-    pub fn new(password: String,addres: String) -> Game {
+    pub fn new(password: String,addres: String,refresh_rate: u32) -> Game {
         Game {
             password,
             addres,
-            characters: Character::load_all(),
+            characters: Character::load_all(Option::None),
             players: Arc::new(HashMap::new().into()),
             map: Arc::new(None.into()),
+            refresh_rate,
         }
     }
     pub fn start(&mut self) {
@@ -82,7 +85,7 @@ impl Game {
             }
         );
         loop {
-            thread::sleep(Duration::from_millis(50));
+            thread::sleep(Duration::from_millis(self.refresh_rate.into()));
             let players_input = Self::players_clone(&self.players);
             loop {
                 if let Ok(ref mut map_opt) = self.map.try_lock() &&
@@ -179,6 +182,7 @@ impl Game {
                 loop { if let Ok(ref mut map_op) = map_ref.try_lock() {
                     if let Some(map) = &mut **map_op && let Some(instance_id) = instance_id_op && let Some(char_instance) = map.characters.get_mut(&instance_id) {
                         char_instance.character = new_id;
+                        char_instance.reset();
                         break;
                     }else{return Err(Response::status(ResponseStatus::Error));}
                 }},

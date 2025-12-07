@@ -38,12 +38,23 @@ pub struct Animations {
     air_born_heavy_attack: Vec<AnimationFrame>,
 }
 impl Animations {
+    pub fn update_textures(&mut self, display: &mut Display<WindowSurface>) {
+        for frame in &mut self.idling {frame.texture.load_texture(display)}
+        for frame in &mut self.running {frame.texture.load_texture(display)}
+        for frame in &mut self.rizing {frame.texture.load_texture(display)}
+        for frame in &mut self.falling {frame.texture.load_texture(display)}
+        for frame in &mut self.light_attack {frame.texture.load_texture(display)}
+        for frame in &mut self.heavy_attack {frame.texture.load_texture(display)}
+        for frame in &mut self.air_born_light_attack {frame.texture.load_texture(display)}
+        for frame in &mut self.air_born_heavy_attack {frame.texture.load_texture(display)}
+    }
     pub fn test() -> Animations {
         let empty_frame = AnimationFrame {
             hurt_sircles: vec![ColisionSircle {state: ColisionState::Vulnerable ,colision_shape: Sircle{radius:0.5,position: [0.0,0.5]}}],
             hit_sircles: Vec::new(),
             events: Vec::new(),
             texture: Texture::new(),
+            hold: 128,
         };
         Animations {
             idling: vec![empty_frame],
@@ -88,23 +99,37 @@ impl Character {
     }
 
     const CHAR_PATH: &str = "./assets/characters/";
-    pub fn load(char_id: u32) -> Option<Character> {
+    pub fn load(char_id: u32,display_option: &mut Option<&mut Display<WindowSurface>>) -> Option<Character> {
         if char_id == 0 {
-            return Some(Self::default());
+            let mut default = Self::default();
+            if let Some(ref mut display) = display_option.as_mut() {
+                default.animations.update_textures(display);
+            }
+            return Some(default);
         }
         let mut character_json = String::new();
         if let Ok(mut file) = File::open(format!("{0}{char_id}.json",Self::CHAR_PATH)) && let Ok(_) = file.read_to_string(&mut character_json){
-            return if let Ok(output) = serde_json::from_str::<Self>(&character_json) {
-                Some(output)
-            } else {
-                Option::None
+            let char_result = serde_json::from_str::<Self>(&character_json);
+            match char_result {
+                Ok(mut output) => {
+                    if let Some(ref mut display) = display_option.as_mut() {
+                        output.animations.update_textures(display);
+                    }
+                    return Some(output);
+                },
+                Err(error) => {
+                    println!("{error:?}");
+                    return Option::None;
+                }
             }
         }
         Option::None
     }
-    pub fn load_all() -> HashMap<u32,Character> {
+    pub fn load_all(display: Option<&mut Display<WindowSurface>>) -> HashMap<u32,Character> {
+        let mut display: Option<&mut Display<WindowSurface>> = display;
+
         let mut out = HashMap::new();
-        out.insert(0,Self::default());
+        out.insert(0,Self::load(0,&mut display).unwrap());
         if let Ok(items_directory) = fs::read_dir(Self::CHAR_PATH) {
             for character_files in items_directory {
                 if  let Ok(something) = character_files &&
@@ -116,8 +141,8 @@ impl Character {
                     name[name.len()-5..] == *".json" && // is last few chars ".json"
                     let Ok(id_number) = name[..name.len()-5].parse::<u32>() && // parse the the
                                                                                // name in to a number
-                    let Some(character) = Self::load(id_number) { // is possible to load the character
-
+                    let Some(character) = Self::load(id_number,&mut display) { // is possible to load the character
+                                                                               
                     out.insert(id_number,character);
                 } 
             }
@@ -145,28 +170,64 @@ pub struct CharacterInstance {
     pub input: CharacterInput
 }
 impl CharacterInstance {
-    pub fn new(character: u32,_id: u32) -> CharacterInstance {
+    pub fn new(character: u32,id: u32) -> CharacterInstance {
         CharacterInstance {
             character,
-            object_id: 0,
+            object_id: id,
 
             position: [0.0,0.0],
             velocity: [0.0,0.0],
-            direction: Direction::Left,
+            direction: Direction::Right,
             airborn: true,
             vournable: ColisionState::Vulnerable,
             state: State::Actionable,
             damage: 0.0,
-            animation: AnimationState::Idling(0),
+            animation: AnimationState::Idling(0,0),
 
             input: CharacterInput::new(),
         }
     }
-    pub fn update(&mut self, _char_sheet: &Character) {
+    pub fn reset(&mut self) {
+        self.animation = AnimationState::Idling(0,0);
+        self.position = [0.0,0.0];
+        self.velocity = [0.0,0.0];
+    }
+    pub fn update(&mut self, char_sheet: &Character) {
+        self.update_animation(char_sheet);
         match self.input.dir.clone() {
-            Some(Direction::Left) => {self.position[0] -= 1.0},
-            Some(Direction::Right) => {self.position[0] += 1.0},
+            Some(some) => {
+                self.direction = some.clone();
+                match some {
+                    Direction::Left => {self.position[0] -= 0.05},
+                    Direction::Right => {self.position[0] += 0.05},
+                }
+            },
             None => {},
+        }
+    }
+    fn update_animation(&mut self,character: &Character) {
+        let anim = &character.animations;
+        let position = self.position;
+        match &mut self.animation {
+            AnimationState::Idling(frame,hold) => 
+                if *hold >= anim.idling[*frame].hold {
+                    if *frame + 1 >= anim.idling.len() {
+                        *frame = 0;
+                    } else {
+                        *frame += 1;
+                    }
+                    *hold = 0;
+                } else {
+                    *hold += 1
+                },
+            AnimationState::Running(frame,hold) => {},
+            AnimationState::Jump(frame,hold) => {},
+            AnimationState::Rizing(frame,hold) => {},
+            AnimationState::Falling(frame,hold) => {},
+            AnimationState::LightAttack(frame,hold) => {},
+            AnimationState::HeavyAttack(frame,hold) => {},
+            AnimationState::AirBornLightAttack(frame,hold) => {},
+            AnimationState::AirBornHeavyAttack(frame,hold) => {},
         }
     }
     pub fn draw(&self,display: &mut Display<WindowSurface>,frame_display: &mut glium::Frame,char_sheet: &HashMap<u32,Character>) {
@@ -174,21 +235,15 @@ impl CharacterInstance {
         let position = self.position;
 
         match self.animation {
-            AnimationState::Idling(frame) => character.animations.idling[frame].texture.draw_on(display, frame_display, position),
-            AnimationState::Running(frame) => character.animations.running[frame].texture.draw_on(display, frame_display, position),
-            AnimationState::Jump(frame) => character.animations.jump[frame].texture.draw_on(display, frame_display, position),
-            AnimationState::Rizing(frame) => character.animations.rizing[frame].texture.draw_on(display, frame_display, position),
-            AnimationState::Falling(frame) => character.animations.falling[frame].texture.draw_on(display, frame_display, position),
-            AnimationState::LightAttack(frame) => character.animations.light_attack[frame].texture.draw_on(display, frame_display, position),
-            AnimationState::HeavyAttack(frame) => character.animations.heavy_attack[frame].texture.draw_on(display, frame_display, position),
-            AnimationState::AirBornLightAttack(frame) => character.animations.air_born_light_attack[frame].texture.draw_on(display, frame_display, position),
-            AnimationState::AirBornHeavyAttack(frame) => character.animations.air_born_heavy_attack[frame].texture.draw_on(display, frame_display, position),
+            AnimationState::Idling(frame,_) => character.animations.idling[frame].texture.draw_on(display, frame_display, position,&self.direction),
+            AnimationState::Running(frame,_) => character.animations.running[frame].texture.draw_on(display, frame_display, position,&self.direction),
+            AnimationState::Jump(frame,_) => character.animations.jump[frame].texture.draw_on(display, frame_display, position,&self.direction),
+            AnimationState::Rizing(frame,_) => character.animations.rizing[frame].texture.draw_on(display, frame_display, position,&self.direction),
+            AnimationState::Falling(frame,_) => character.animations.falling[frame].texture.draw_on(display, frame_display, position,&self.direction),
+            AnimationState::LightAttack(frame,_) => character.animations.light_attack[frame].texture.draw_on(display, frame_display, position,&self.direction),
+            AnimationState::HeavyAttack(frame,_) => character.animations.heavy_attack[frame].texture.draw_on(display, frame_display, position,&self.direction),
+            AnimationState::AirBornLightAttack(frame,_) => character.animations.air_born_light_attack[frame].texture.draw_on(display, frame_display, position,&self.direction),
+            AnimationState::AirBornHeavyAttack(frame,_) => character.animations.air_born_heavy_attack[frame].texture.draw_on(display, frame_display, position,&self.direction),
         }
     }
-    
-    //     let anim_tree = &char_sheet.get(&self.character)
-    //         .expect("Character by ID: {char_sheet_id} not found.\nTrying to render unknow character.")
-    //         .animations;
-    //     let display, frame, position = offset + self.position.clone();
-    // }
 }

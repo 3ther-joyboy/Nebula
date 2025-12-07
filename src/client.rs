@@ -44,10 +44,11 @@ pub struct Client {
     input: CharacterInput,
     game_pointer: Option<GameRanderer>,
 
-    input_map: HashMap<KeyCode,InputEvents>
+    input_map: HashMap<KeyCode,InputEvents>,
+    refresh_rate: u32,
 }
 impl Client {
-    pub fn new(password: String, name: String, addres: String) -> Client {
+    pub fn new(password: String, name: String, addres: String, refresh_rate: u32) -> Client {
         let mut input_map = HashMap::new();
         input_map.insert(KeyCode::KeyA,InputEvents::Left);
         input_map.insert(KeyCode::ArrowLeft,InputEvents::Left);
@@ -74,13 +75,14 @@ impl Client {
             input: CharacterInput::new(),
             game_pointer: Option::None,
             input_map,
+            refresh_rate,
         }
     } 
     pub fn default() -> Client {
         let password = String::new();
         let name = String::from("User");
         let addres = String::from("localhost:3621");
-        Self::new(password,name,addres)
+        Self::new(password,name,addres,50)
     }
     pub fn start(&mut self) {
         let (map_trans, map_rec) = mpsc::channel::<Map>();
@@ -88,6 +90,7 @@ impl Client {
         let addres = self.addres.clone();
         let input_map = self.input_map.clone();
         let (name,password) = (self.name.clone(),self.password.clone());
+        let refresh_rate = self.refresh_rate.into();
 
 
         let _network = thread::spawn(move || {
@@ -174,12 +177,11 @@ impl Client {
                 }
                 input_type = InputTypeEvent::Normal;
                 
-                thread::sleep(std::time::Duration::from_millis(50));
+                thread::sleep(std::time::Duration::from_millis(refresh_rate));
             }
         });
 
         let event_loop = EventLoop::builder().build().expect("event loop building");
-
         let (window, display) = SimpleWindowBuilder::new().build(&event_loop);
         let mut game_renderer = GameRanderer::new(map_rec,input_trans, window, display);
         let _ = event_loop.run_app(&mut game_renderer);
