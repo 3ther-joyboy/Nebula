@@ -1,0 +1,87 @@
+{
+    "id": 1,
+    "name": "Mario",
+    "weight": 1,
+    "air_jump_count": 1,
+    "aceleration": 10,
+    "max_speed": 5,
+    "colider": {
+        "radius": 0.3,
+        "position": [0,0.3]
+    },
+    "animations": {
+        "idling": [
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.5,
+                            "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "hit_sircles": [],
+                "events": [],
+                "texture": {
+                    "path": "./assets/characters/Lee.png",
+					"scale": 4,
+					"offset":[-29,0],
+					"position":[4,230],
+					"dimensions":[58,87]
+                },
+				"hold": 5
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.5,
+                            "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "hit_sircles": [],
+                "events": [],
+                "texture": {
+                    "path": "./assets/characters/Lee.png",
+					"scale": 4,
+					"offset":[-28,-1],
+					"position":[57,230],
+					"dimensions":[54,87]
+                },
+				"hold": 5
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.5,
+                            "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "hit_sircles": [],
+                "events": [],
+                "texture": {
+                    "path": "./assets/characters/Lee.png",
+					"scale": 4,
+					"offset":[-25,-1],
+					"position":[108,230],
+					"dimensions":[53,87]
+                },
+				"hold": 5
+            }
+        ],
+        "running": [],
+        "jump": [],
+        "rizing": [],
+        "falling": [],
+        "light_attack": [],
+        "heavy_attack": [],
+        "air_born_light_attack": [],
+        "air_born_heavy_attack": []
+    }
+}
