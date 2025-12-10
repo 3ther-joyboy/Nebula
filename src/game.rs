@@ -58,7 +58,7 @@ impl Game {
             characters: Character::load_all(Option::None),
             players: Arc::new(HashMap::new().into()),
             map: Arc::new(Some(Map::test()).into()),
-            refresh_rate: 50,
+            refresh_rate: 30,
         }
     }
     pub fn new(password: String,addres: String,refresh_rate: u32) -> Game {

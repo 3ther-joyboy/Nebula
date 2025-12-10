@@ -82,7 +82,7 @@ impl Client {
         let password = String::new();
         let name = String::from("User");
         let addres = String::from("localhost:3621");
-        Self::new(password,name,addres,50)
+        Self::new(password,name,addres,30)
     }
     pub fn start(&mut self) {
         let (map_trans, map_rec) = mpsc::channel::<Map>();
