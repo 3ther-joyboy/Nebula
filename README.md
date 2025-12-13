@@ -1,5 +1,5 @@
 ---
-title: "**Nebulaal**"
+title: "**Nebula**"
 event: Maturita 2025/26
 author: Lukáš Valla
 
