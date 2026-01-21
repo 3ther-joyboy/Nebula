@@ -1,9 +1,10 @@
 use serde::{Serialize, Deserialize};
 use winit::application::ApplicationHandler;
 use std::collections::HashMap;
-use crate::game::character::Character;
 use crate::game::physic::Direction;
 
+use crate::game::character::Character;
+use crate::game::map::MapInformation;
 
 use image::ImageReader;
 
@@ -18,7 +19,6 @@ use winit::{
     },
 };
 use std::sync::mpsc::{Receiver,Sender};
-// use std::collections::HashMap;
 use glium::{
     glutin::surface::WindowSurface,
     Surface,
@@ -107,53 +107,69 @@ impl Texture {
         let texture = glium::texture::Texture2d::new(display, image).unwrap();
         self.texture = Some(texture);
     }
+    const VERTEX_SHADER_SRC: &str = r#"
+        #version 140
+        in vec2 position;
+        in vec2 tex_coords;
+
+        out vec2 v_tex_coords;
+
+        void main() {
+            v_tex_coords = tex_coords;
+            gl_Position = vec4(position, 0.0, 1.0);
+        }
+    "#;
+    const FRAGMENT_SHADER_SRC: &str = r#"
+        #version 140
+
+        in vec2 v_tex_coords;
+        out vec4 color;
+
+        uniform sampler2D tex;
+
+        void main() {
+            vec4 texColor = texture(tex, v_tex_coords);
+            if(texColor.a < 1.0)
+                discard;
+            color = vec4(texColor.r,texColor.g,texColor.b,1.0);
+        }
+    "#;
+    pub fn draw(&self ,display: &mut Display<WindowSurface>,frame: &mut glium::Frame) {
+        let shape = vec![
+            Vertex::new([-1.0, -1.0],[0.0, 0.0]),
+            Vertex::new([1.0, -1.0],[1.0, 0.0]),
+            Vertex::new([1.0, 1.0],[1.0, 1.0]),
+
+            Vertex::new([1.0, 1.0],[1.0, 1.0]),
+            Vertex::new([-1.0, 1.0],[0.0, 1.0]),
+            Vertex::new([-1.0, -1.0],[0.0, 0.0]),
+        ];
+        let vertex_buffer = glium::VertexBuffer::new(display, &shape).unwrap();
+        let uniforms = uniform! {
+            tex: self.texture.as_ref().expect("No texture loaded"),
+        };
+        let indices = glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList);
+        let program_err = glium::Program::from_source(display, Self::VERTEX_SHADER_SRC, Self::FRAGMENT_SHADER_SRC, None);
+        frame.draw(&vertex_buffer, &indices, &program_err.unwrap(), &uniforms, &Default::default()).unwrap();
+    }
     pub fn draw_on(&self ,display: &mut Display<WindowSurface>,frame: &mut glium::Frame,post: [f32;2],dir: &Direction) {
         let (x,y) = display.get_framebuffer_dimensions();
         let scaled_dimensions = (1.0/(x as f32 *2.0),1.0/(y as f32 *2.0));
 
         let shape = self.new_vertex_shape(scaled_dimensions,(post[0] * Self::FLOAT_TO_PIXELS,post[1] * Self::FLOAT_TO_PIXELS),dir);
         let vertex_buffer = glium::VertexBuffer::new(display, &shape).unwrap();
-
-        let vertex_shader_src = r#"
-            #version 140
-            in vec2 position;
-            in vec2 tex_coords;
-
-            out vec2 v_tex_coords;
-
-            void main() {
-                v_tex_coords = tex_coords;
-                gl_Position = vec4(position, 0.0, 1.0);
-            }
-        "#;
-        let fragment_shader_src = r#"
-            #version 140
-
-            in vec2 v_tex_coords;
-            out vec4 color;
-
-            uniform sampler2D tex;
-
-            void main() {
-                vec4 texColor = texture(tex, v_tex_coords);
-                if(texColor.a < 1.0)
-                    discard;
-                color = vec4(texColor.r,texColor.g,texColor.b,1.0);
-            }
-        "#;
         let uniforms = uniform! {
             tex: self.texture.as_ref().expect("No texture loaded"),
         };
 
         let indices = glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList);
 
-        let program_err = glium::Program::from_source(display, vertex_shader_src, fragment_shader_src, None);
+        let program_err = glium::Program::from_source(display, Self::VERTEX_SHADER_SRC, Self::FRAGMENT_SHADER_SRC, None);
 
         frame.draw(&vertex_buffer, &indices, &program_err.unwrap(), &uniforms, &Default::default()).unwrap();
     }
 }
 
-#[allow(dead_code)]
 pub struct GameRanderer {
     input_channel: Sender<WindowEvent>,
     map_channel: Receiver<Map>,
@@ -161,6 +177,7 @@ pub struct GameRanderer {
     display: Display<WindowSurface>,
 
     character_sheet: HashMap<u32,Character>,
+    map_pool: HashMap<usize,MapInformation>,
 }
 impl GameRanderer {
     pub fn new(map_channel: Receiver<Map>, input_channel: Sender<WindowEvent>, window: Window, mut display: Display<WindowSurface> ) -> GameRanderer {
@@ -169,6 +186,7 @@ impl GameRanderer {
             input_channel,
             window,
             character_sheet: Character::load_all(Some(&mut display)),
+            map_pool: MapInformation::load_all(Some(&mut display)),
             display,
         }
     }
@@ -187,13 +205,18 @@ impl ApplicationHandler for GameRanderer {
                 let mut map_it = self.map_channel.try_iter().peekable();
                 while let Some(map) = map_it.next() && map_it.peek().is_none() {
                     let mut target = self.display.draw();
-                    target.clear_color(0.0, 1.0, 1.0, 1.0);
+                    target.clear_color(1.0, 1.0, 1.0, 1.0);
 
+                    let map_info = self.map_pool.get(&map.map_id);
+                    if let Some(map) = map_info {
+                        map.draw_background(&mut self.display,&mut target)
+                    }
                     for (_,character) in map.characters {
                         character.draw(&mut self.display,&mut target,&self.character_sheet);
                     }
-
-
+                    if let Some(map) = map_info {
+                        map.draw_foreground(&mut self.display,&mut target)
+                    }
                     target.finish().unwrap();
                 }
             },
