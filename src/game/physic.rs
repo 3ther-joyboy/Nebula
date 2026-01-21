@@ -35,29 +35,28 @@ pub enum FrameEvent{
     ApplyHitStun(f32),
     ChangeColisionState(ColisionState,u32),
 }
-type HoldSize = u8;
 #[derive(Serialize, Deserialize, Clone)]
 pub struct AnimationFrame {
     pub hurt_sircles: Vec<ColisionSircle>,
     pub hit_sircles: Vec<HitSircle>,
     pub events: Vec<FrameEvent>,
     pub texture: Texture,
-    pub hold: HoldSize,
+    pub hold: u8,
 }
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone,PartialEq)]
 pub enum AnimationState {
-    Idling(usize,HoldSize),
-    Running(usize,HoldSize),
+    Idling,
+    Running,
 
-    Jump(usize,HoldSize),
-    Rizing(usize,HoldSize),
-    Falling(usize,HoldSize),
+    Jump,
+    Rizing,
+    Falling,
 
-    LightAttack(usize,HoldSize),
-    HeavyAttack(usize,HoldSize),
+    LightAttack,
+    HeavyAttack,
     
-    AirBornLightAttack(usize,HoldSize),
-    AirBornHeavyAttack(usize,HoldSize),
+    AirBornLightAttack,
+    AirBornHeavyAttack,
 }
 #[derive(Debug,Serialize, Deserialize, Clone)]
 pub enum Direction {
