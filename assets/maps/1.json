@@ -1,0 +1,26 @@
+{
+	"background": {
+		"path": "./assets/maps/test_map/brawhala.png",
+		"dimensions":[728,409],
+		"scale": 1,
+		"offset":[0,0],
+		"position":[0,0]
+	},
+	"stage": {
+		"path": "./assets/maps/test_map/test_map.png",
+		"scale": 5,
+		"offset":[-256,-256],
+		"position":[0,0],
+		"dimensions":[512,512]
+	},
+	"foreground": {
+		"path": "./assets/maps/test_map/foreground.png",
+		"scale": 1,
+		"offset":[0,0],
+		"position":[0,0],
+		"dimensions":[1920,1222]
+	},
+	"render_colission_boxes": true,
+	"statics": [
+	]
+}

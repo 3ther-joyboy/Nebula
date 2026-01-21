@@ -21,7 +21,6 @@ use std::{
 };
 
 #[derive(Clone)]
-#[allow(dead_code)]
 pub struct Player {
     id: String,
     last_ping: usize,
@@ -61,13 +60,13 @@ impl Game {
             refresh_rate: 30,
         }
     }
-    pub fn new(password: String,addres: String,refresh_rate: u32) -> Game {
+    pub fn new(password: String,addres: String,refresh_rate: u32,map_id: usize) -> Game {
         Game {
             password,
             addres,
             characters: Character::load_all(Option::None),
             players: Arc::new(HashMap::new().into()),
-            map: Arc::new(None.into()),
+            map: Arc::new(Some(Map::new(map_id)).into()),
             refresh_rate,
         }
     }
@@ -188,6 +187,7 @@ impl Game {
                 }},
             (Option::None,Option::None) => {},
         }
+
         Ok(())
     }
     fn get_map_res(map_ref: &Arc<Mutex<Option<Map>>>) -> Response {
