@@ -47,6 +47,7 @@ pub struct Game {
     characters: HashMap<u32,Character>,
 
     map: Arc<Mutex<Option<Map>>>,
+    map_pool: HashMap<usize,MapInformation>,
     refresh_rate: u32,
 }
 impl Game {
@@ -57,6 +58,7 @@ impl Game {
             characters: Character::load_all(Option::None),
             players: Arc::new(HashMap::new().into()),
             map: Arc::new(Some(Map::test()).into()),
+            map_pool: MapInformation::load_all(None),
             refresh_rate: 30,
         }
     }
@@ -67,6 +69,7 @@ impl Game {
             characters: Character::load_all(Option::None),
             players: Arc::new(HashMap::new().into()),
             map: Arc::new(Some(Map::new(map_id)).into()),
+            map_pool: MapInformation::load_all(None),
             refresh_rate,
         }
     }
@@ -91,7 +94,7 @@ impl Game {
                     let Some(map) = &mut **map_opt {
                         map.counter += 1;
                         map.set_inputs(players_input);
-                        map.update(&self.characters);
+                        map.update(&self.characters,&self.map_pool);
                         break;
 
                 }

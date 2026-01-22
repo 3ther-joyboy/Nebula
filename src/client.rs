@@ -56,6 +56,7 @@ impl Client {
         input_map.insert(KeyCode::KeyD,InputEvents::Right);
         input_map.insert(KeyCode::ArrowRight,InputEvents::Right);
 
+        input_map.insert(KeyCode::ArrowUp,InputEvents::Jump);
         input_map.insert(KeyCode::KeyW,InputEvents::Jump);
         input_map.insert(KeyCode::KeyC,InputEvents::Jump);
 

@@ -19,6 +19,7 @@ use serde::{
     Deserialize,
 };
 use crate::{
+    base::Math,
     base::sircle::*,
     game::physic::*,
     client::renderer::*,
@@ -210,15 +211,86 @@ impl CharacterInstance {
         self.position = [0.0,0.0];
         self.velocity = [0.0,0.0];
     }
-    pub fn update(&mut self, char_sheet: &Character) {
+    fn check_colision(&self, col: &ColisionPlane, char_sheet: &Character) -> bool {
+        let mut colider = char_sheet.colider.clone();
+        colider.position = Math::add_vec(&self.position,&colider.position);
+
+        if Math::distance(&colider.position, &col.position) > col.size/2.0 + colider.radius {
+            return false;
+        }
+        match col.rotation {
+            Orientation::Up | Orientation::Down => {
+                (col.position[1] - colider.position[1]).abs() < colider.radius
+            }
+            Orientation::Left | Orientation::Right => {
+                (col.position[0] - colider.position[0]).abs() < colider.radius
+            }
+        }
+    }
+    pub fn update(&mut self, char_sheet: &Character, map: &crate::game::MapInformation) {
+        const DELTA: f32 = 1.0/40.0;
+        const GRAVITY: f32 = 0.04;
         self.update_animation(char_sheet);
+
+        self.velocity[1] -= DELTA * GRAVITY;
+        self.airborn = true;
+
+
+        // "b_XX" -> boolean
+        let (mut b_up,mut b_down,mut b_right,mut b_left) = (
+                self.velocity[1] < 0.0,
+                self.velocity[1] > 0.0,
+                self.velocity[0] < 0.0,
+                self.velocity[0] > 0.0
+            );
+        for col in &map.statics {
+            match col.rotation {
+                Orientation::Down => 
+                    if b_down && self.check_colision(col, &char_sheet) {
+                        b_down = false;
+                        self.velocity[1] = 0.0;
+                    },
+                Orientation::Up => 
+                    if b_up && self.check_colision(col, &char_sheet) {
+                        b_up = false;
+                        self.velocity[1] = 0.0;
+                        self.velocity[0] *= 0.8;
+                        self.airborn = false;
+                    },
+                Orientation::Right => 
+                    if b_right && self.check_colision(col, &char_sheet) {
+                        b_right = false;
+                        self.velocity[1] *= 0.8;
+                        self.velocity[0] = 0.0;
+                    },
+                Orientation::Left => 
+                    if b_left && self.check_colision(col, &char_sheet) {
+                        b_left = false;
+                        self.velocity[1] *= 0.8;
+                        self.velocity[0] = 0.0;
+                    },
+            }
+        }
+
+        println!("{:?}",&self.velocity);
+        let new_location = Math::add_vec(&self.position,&self.velocity);
+        if Math::distance(&new_location,&self.position) < 0.0001 {
+            self.velocity = [0.0,0.0];
+        } else {
+            self.position = new_location;
+        }
+
+
+        if self.input.jump {
+            self.velocity[1] = 0.03;
+        }
         match self.input.dir.clone() {
             Some(some) => {
                 self.direction = some.clone();
                 self.change_animation(AnimationState::Running);
                 match some {
-                    Direction::Left => {self.position[0] -= 0.05},
-                    Direction::Right => {self.position[0] += 0.05},
+                    Direction::Left => {self.velocity[0] -= 0.005},
+                    Direction::Right => {self.velocity[0] += 0.005},
                 }
             },
             None => {

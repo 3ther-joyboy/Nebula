@@ -24,68 +24,68 @@
 	"statics": [
 		{
 			"comment": "Main platform",
-			"position": [-70,-70],
-			"size": 900,
+			"position": [-0.28,-0.28],
+			"size": 3.6,
 			"rotation": "Up"
 		},
 		{
 			"comment": "Right tower top",
-			"position": [325,175],
-			"size": 225,
+			"position": [1.3,0.7],
+			"size": 0.9,
 			"rotation": "Up"
 		},
 		{
 			"comment": "Lower fall thru (blue)",
-			"position": [-100,100],
-			"size": 200,
+			"position": [-0.4,0.4],
+			"size": 0.8,
 			"rotation": "Up"
 		},
 		{
 			"comment": "Higher fall thru (blue)",
-			"position": [-100,300],
-			"size": 200,
+			"position": [-0.4,1.2],
+			"size": 0.8,
 			"rotation": "Up"
 		},
 		{
 			"comment": "Left wall of the tower",
-			"position": [200,20],
-			"size": 300,
+			"position": [0.8,0.08],
+			"size": 1.2,
 			"rotation": "Left"
 		},
 		{
 			"comment": "Right outer wall of the tower",
-			"position": [450,20],
-			"size": 300,
+			"position": [1.8,0.08],
+			"size": 1.2,
 			"rotation": "Right"
 		},
 		{
 			"comment": "Main iland left wall",
-			"position": [-450,-220],
-			"size": 300,
+			"position": [-1.8,-0.88],
+			"size": 1.2,
 			"rotation": "Left"
 		},
 		{
 			"comment": "Cube bottom",
-			"position": [-400,175],
-			"size": 200,
+			"position": [-1.6,0.7],
+			"size": 0.8,
 			"rotation": "Down"
 		},
 		{
 			"comment": "Cube top",
-			"position": [-400,375],
-			"size": 200,
+			"position": [-1.6,1.5],
+			"size": 0.8,
 			"rotation": "Up"
 		},
 		{
 			"comment": "Cube left",
-			"position": [-500,275],
-			"size": 200,
+			"position": [-2,1.1],
+			"size": 0.8,
 			"rotation": "Left"
 		},
 		{
 			"comment": "Cube right",
-			"position": [-300,275],
-			"size": 200,
+			"position": [-1.2,1.1],
+			"size": 0.8,
 			"rotation": "Right"
 		}
 	]

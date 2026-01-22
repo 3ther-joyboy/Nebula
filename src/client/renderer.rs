@@ -202,9 +202,9 @@ impl GameRanderer {
         let (x,y) = display.get_framebuffer_dimensions();
         let (x,y) = (x as f32, y as f32);
         let shape = vec![
-            Ver {position: [post.0[0]/x,post.0[1]/y]},
-            Ver {position: [post.1[0]/x,post.1[1]/y]},
-            Ver {position: [post.2[0]/x,post.2[1]/y]},
+            Ver {position: [post.0[0]*Texture::FLOAT_TO_PIXELS/x,post.0[1]*Texture::FLOAT_TO_PIXELS/y]},
+            Ver {position: [post.1[0]*Texture::FLOAT_TO_PIXELS/x,post.1[1]*Texture::FLOAT_TO_PIXELS/y]},
+            Ver {position: [post.2[0]*Texture::FLOAT_TO_PIXELS/x,post.2[1]*Texture::FLOAT_TO_PIXELS/y]},
         ];
         let vertex_buffer = glium::VertexBuffer::new(display, &shape).unwrap();
         let fragment_shader_src = r#"
@@ -266,7 +266,7 @@ impl ApplicationHandler for GameRanderer {
                                         (
                                             [pos[0] + off*x,pos[1] + off*y],
                                             [pos[0] - off*x,pos[1] - off*y],
-                                            [pos[0] + 10.0*y,pos[1] + 10.0*x],
+                                            [pos[0] + 0.1*y,pos[1] + 0.1*x],
                                         )
                                     );
                             }

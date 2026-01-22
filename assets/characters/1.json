@@ -6,8 +6,8 @@
     "aceleration": 10,
     "max_speed": 5,
     "colider": {
-        "radius": 0.3,
-        "position": [0,0.3]
+        "radius": 0.03,
+        "position": [0,0.03]
     },
     "animations": {
         "idling": [
