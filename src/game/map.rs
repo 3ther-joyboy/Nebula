@@ -2,9 +2,12 @@ use serde::{
     Serialize,
     Deserialize,
 };
-use crate::{
-    game::character::CharacterInstance,
-    game::Character,
+use crate::game::{
+    character::CharacterInstance,
+    Character,
+
+    physic::Direction,
+    physic::ColisionPlane,
 };
 use crate::client::renderer::Texture;
 use glium::{
@@ -19,15 +22,14 @@ use std::{
     },
     io::Read,
 };
-use crate::game::physic::Direction;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct MapInformation {
     background: Option<Texture>,
     stage: Option<Texture>,
     foreground: Option<Texture>,
-    render_colission_boxes: bool,
-    statics: Vec<()>
+    pub render_colission_boxes: bool,
+    pub statics: Vec<ColisionPlane>
 }
 impl MapInformation {
     pub fn draw_background(&self,display: &mut Display<WindowSurface>,frame_display: &mut glium::Frame) {
@@ -41,9 +43,6 @@ impl MapInformation {
         }
         if let Some(tex) = &self.foreground {
             tex.draw(display,frame_display);
-        }
-        for collision_boxes in &self.statics {
-            todo!();
         }
     }
     pub fn default() -> MapInformation {

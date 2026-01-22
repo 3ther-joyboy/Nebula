@@ -7,6 +7,7 @@ use crate::game::character::Character;
 use crate::game::map::MapInformation;
 
 use image::ImageReader;
+use crate::game::physic::Orientation;
 
 use winit::{
     event::WindowEvent,
@@ -191,6 +192,41 @@ impl GameRanderer {
         }
     }
 }
+impl GameRanderer {
+    pub fn draw_triangle_on( display: &mut Display<WindowSurface>, frame: &mut glium::Frame, post: ([f32;2],[f32;2],[f32;2])) {
+        #[derive(Copy, Clone)]
+        struct Ver {
+            position: [f32;2],
+        }
+        implement_vertex!(Ver, position);
+        let (x,y) = display.get_framebuffer_dimensions();
+        let (x,y) = (x as f32, y as f32);
+        let shape = vec![
+            Ver {position: [post.0[0]/x,post.0[1]/y]},
+            Ver {position: [post.1[0]/x,post.1[1]/y]},
+            Ver {position: [post.2[0]/x,post.2[1]/y]},
+        ];
+        let vertex_buffer = glium::VertexBuffer::new(display, &shape).unwrap();
+        let fragment_shader_src = r#"
+            #version 140
+            out vec4 color;
+            void main() {
+                color = vec4(1.0, 0.0, 0.0, 1.0);
+            }
+        "#;
+        let vertex_shader_src = r#"
+            #version 140
+            in vec2 position;
+            void main() {
+                gl_Position = vec4(position, 0.0, 1.0);
+            }
+        "#;
+        let program_err = glium::Program::from_source(display, vertex_shader_src, fragment_shader_src, None);
+
+        let indices = glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList);
+        frame.draw(&vertex_buffer, &indices, &program_err.unwrap(), &glium::uniforms::EmptyUniforms, &Default::default()).unwrap();
+    }
+}
 impl ApplicationHandler for GameRanderer {
     fn resumed(&mut self, _: &ActiveEventLoop) {
         let mut target = self.display.draw();
@@ -215,7 +251,26 @@ impl ApplicationHandler for GameRanderer {
                         character.draw(&mut self.display,&mut target,&self.character_sheet);
                     }
                     if let Some(map) = map_info {
-                        map.draw_foreground(&mut self.display,&mut target)
+                        map.draw_foreground(&mut self.display,&mut target);
+                        if map.render_colission_boxes {
+                            for collision in &map.statics {
+                                let pos = collision.position;
+                                let off = collision.size/2.0;
+                                let (x,y) = match &collision.rotation {
+                                    Orientation::Left => (0.0,1.0),
+                                    Orientation::Down => (1.0,0.0),
+                                    Orientation::Right => (0.0,-1.0),
+                                    Orientation::Up => (-1.0,0.0),
+                                };
+                                Self::draw_triangle_on(&mut self.display,&mut target,
+                                        (
+                                            [pos[0] + off*x,pos[1] + off*y],
+                                            [pos[0] - off*x,pos[1] - off*y],
+                                            [pos[0] + 10.0*y,pos[1] + 10.0*x],
+                                        )
+                                    );
+                            }
+                        }
                     }
                     target.finish().unwrap();
                 }

@@ -12,6 +12,19 @@ pub enum ColisionState {
     UnTouchable,
 }
 #[derive(Serialize, Deserialize, Clone)]
+pub enum Orientation {
+    Up,
+    Right,
+    Down,
+    Left,
+}
+#[derive(Serialize, Deserialize, Clone)]
+pub struct ColisionPlane {
+    pub position: [f32;2],
+    pub size: f32,
+    pub rotation: Orientation,
+}
+#[derive(Serialize, Deserialize, Clone)]
 pub struct ColisionSircle {
     pub colision_shape: Sircle,
     pub state: ColisionState,
