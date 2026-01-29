@@ -1,1 +1,6 @@
 /target
+assets/characters/*.kra
+Cargo.lock
+Cargo.lock
+Cargo.lock
+README.md
