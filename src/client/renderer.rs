@@ -155,7 +155,7 @@ impl Texture {
     }
     pub fn draw_on(&self ,display: &mut Display<WindowSurface>,frame: &mut glium::Frame,post: [f32;2],dir: &Direction) {
         let (x,y) = display.get_framebuffer_dimensions();
-        let scaled_dimensions = (1.0/(x as f32 *2.0),1.0/(y as f32 *2.0));
+        let scaled_dimensions = (1.0/(x as f32 *1.0),1.0/(y as f32 *1.0));
 
         let shape = self.new_vertex_shape(scaled_dimensions,(post[0] * Self::FLOAT_TO_PIXELS,post[1] * Self::FLOAT_TO_PIXELS),dir);
         let vertex_buffer = glium::VertexBuffer::new(display, &shape).unwrap();
@@ -193,7 +193,7 @@ impl GameRanderer {
     }
 }
 impl GameRanderer {
-    pub fn draw_triangle_on( display: &mut Display<WindowSurface>, frame: &mut glium::Frame, post: ([f32;2],[f32;2],[f32;2])) {
+    pub fn draw_triangle_on( display: &mut Display<WindowSurface>, frame: &mut glium::Frame, post: ([f32;2],[f32;2],[f32;2]),color: [f32;4]) {
         #[derive(Copy, Clone)]
         struct Ver {
             position: [f32;2],
@@ -209,9 +209,10 @@ impl GameRanderer {
         let vertex_buffer = glium::VertexBuffer::new(display, &shape).unwrap();
         let fragment_shader_src = r#"
             #version 140
-            out vec4 color;
+            uniform vec4 in_color;
+            out vec4 out_color;
             void main() {
-                color = vec4(1.0, 0.0, 0.0, 1.0);
+                out_color = in_color;
             }
         "#;
         let vertex_shader_src = r#"
@@ -223,8 +224,11 @@ impl GameRanderer {
         "#;
         let program_err = glium::Program::from_source(display, vertex_shader_src, fragment_shader_src, None);
 
+        let uniforms = uniform! {
+            in_color: color,
+        };
         let indices = glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList);
-        frame.draw(&vertex_buffer, &indices, &program_err.unwrap(), &glium::uniforms::EmptyUniforms, &Default::default()).unwrap();
+        frame.draw(&vertex_buffer, &indices, &program_err.unwrap(), &uniforms, &Default::default()).unwrap();
     }
 }
 impl ApplicationHandler for GameRanderer {
@@ -241,16 +245,11 @@ impl ApplicationHandler for GameRanderer {
                 let mut map_it = self.map_channel.try_iter().peekable();
                 while let Some(map) = map_it.next() && map_it.peek().is_none() {
                     let mut target = self.display.draw();
-                    target.clear_color(1.0, 1.0, 1.0, 1.0);
-
                     let map_info = self.map_pool.get(&map.map_id);
                     if let Some(map) = map_info {
                         map.draw_background(&mut self.display,&mut target)
                     }
-                    for (_,character) in map.characters {
-                        character.draw(&mut self.display,&mut target,&self.character_sheet);
-                    }
-                    if let Some(map) = map_info {
+                    if let Some(map) = map_info { //todo move to Map.rs
                         map.draw_foreground(&mut self.display,&mut target);
                         if map.render_colission_boxes {
                             for collision in &map.statics {
@@ -267,10 +266,14 @@ impl ApplicationHandler for GameRanderer {
                                             [pos[0] + off*x,pos[1] + off*y],
                                             [pos[0] - off*x,pos[1] - off*y],
                                             [pos[0] + 0.1*y,pos[1] + 0.1*x],
-                                        )
+                                        ),
+                                        [1.0,0.0,0.0,1.0]
                                     );
                             }
                         }
+                    }
+                    for (_,character) in map.characters {
+                        character.draw(&mut self.display,&mut target,&self.character_sheet);
                     }
                     target.finish().unwrap();
                 }

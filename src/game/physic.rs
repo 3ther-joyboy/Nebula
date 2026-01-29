@@ -61,7 +61,6 @@ pub enum AnimationState {
     Idling,
     Running,
 
-    Jump,
     Rizing,
     Falling,
 
@@ -70,6 +69,20 @@ pub enum AnimationState {
     
     AirBornLightAttack,
     AirBornHeavyAttack,
+}
+impl AnimationState {
+    pub fn looping(&self) -> bool {
+        match self {
+            AnimationState::Idling => {true},
+            AnimationState::Running => {true},
+            AnimationState::Rizing => {true},
+            AnimationState::Falling => {true},
+            AnimationState::LightAttack => {false},
+            AnimationState::HeavyAttack => {false},
+            AnimationState::AirBornLightAttack => {false},
+            AnimationState::AirBornHeavyAttack => {false},
+        } 
+    }
 }
 #[derive(Debug,Serialize, Deserialize, Clone)]
 pub enum Direction {

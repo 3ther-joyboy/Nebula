@@ -30,7 +30,6 @@ use crate::{
 pub struct Animations {
     idling: Vec<AnimationFrame>,
     running: Vec<AnimationFrame>,
-    jump: Vec<AnimationFrame>,
     rizing: Vec<AnimationFrame>,
     falling: Vec<AnimationFrame>,
     light_attack: Vec<AnimationFrame>,
@@ -60,7 +59,6 @@ impl Animations {
         Animations {
             idling: vec![empty_frame],
             running: Vec::new(),
-            jump: Vec::new(),
             rizing: Vec::new(),
             falling: Vec::new(),
             light_attack: Vec::new(),
@@ -80,6 +78,7 @@ pub struct Character {
     max_speed: f32,
     colider: Sircle,
 
+    debug: bool,
     animations: Animations,
 }
 impl Character {
@@ -91,6 +90,7 @@ impl Character {
             air_jump_count: 1,
             aceleration: 10.0,
             max_speed: 5.0,
+            debug: true,
             colider: Sircle {radius: 0.3, position: [0.0,0.3]},
             animations: Animations::test(),
         }
@@ -154,7 +154,6 @@ impl Character {
         match animation {
             AnimationState::Idling => {&self.animations.idling},
             AnimationState::Running => {&self.animations.running},
-            AnimationState::Jump => {&self.animations.jump},
             AnimationState::Rizing => {&self.animations.rizing},
             AnimationState::Falling => {&self.animations.falling},
             AnimationState::LightAttack => {&self.animations.light_attack},
@@ -272,7 +271,6 @@ impl CharacterInstance {
             }
         }
 
-        println!("{:?}",&self.velocity);
         let new_location = Math::add_vec(&self.position,&self.velocity);
         if Math::distance(&new_location,&self.position) < 0.0001 {
             self.velocity = [0.0,0.0];
@@ -284,18 +282,30 @@ impl CharacterInstance {
         if self.input.jump {
             self.velocity[1] = 0.03;
         }
-        match self.input.dir.clone() {
-            Some(some) => {
+        let input_direction = self.input.dir.clone();
+        match input_direction {
+            Some(ref some) => {
                 self.direction = some.clone();
-                self.change_animation(AnimationState::Running);
                 match some {
                     Direction::Left => {self.velocity[0] -= 0.005},
                     Direction::Right => {self.velocity[0] += 0.005},
                 }
             },
-            None => {
-                self.change_animation(AnimationState::Idling);
-            },
+            None => {},
+        }
+        if self.animation.looping() {
+            if self.airborn {
+                if self.velocity[1] > 0.0 {
+                    self.change_animation(AnimationState::Rizing);
+                } else {
+                    self.change_animation(AnimationState::Falling);
+                }
+            } else {
+                match input_direction {
+                    Option::Some(_) => {self.change_animation(AnimationState::Running)},
+                    Option::None => {self.change_animation(AnimationState::Idling)},
+                }
+            }
         }
     }
     fn change_animation(&mut self, anim: AnimationState) {
@@ -319,10 +329,18 @@ impl CharacterInstance {
             self.animation_hold += 1
         }
     }
+    pub fn draw_hitbox(&self,display: &mut Display<WindowSurface>,frame_display: &mut glium::Frame,char_sheet: &HashMap<u32,Character>) {
+    }
+    pub fn draw_colision_box(&self,display: &mut Display<WindowSurface>,frame_display: &mut glium::Frame,char_sheet: &HashMap<u32,Character>) {
+    }
     pub fn draw(&self,display: &mut Display<WindowSurface>,frame_display: &mut glium::Frame,char_sheet: &HashMap<u32,Character>) {
         let character = char_sheet.get(&self.character).expect("Character that is trying to be rendered not found");
         let position = self.position;
         let frame = self.animation_frame;
         character.get_animations(&self.animation)[frame].texture.draw_on(display, frame_display, position,&self.direction);
+        if character.debug {
+            const GREENISH: [f32;4] = [0.0,0.3,0.6,1.0];
+            character.colider.draw(display,frame_display,&self.position,GREENISH)
+        }
     }
 }

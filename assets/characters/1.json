@@ -1,4 +1,5 @@
 {
+	"debug": false,
     "id": 1,
     "name": "Lee",
     "weight": 1,
@@ -6,8 +7,8 @@
     "aceleration": 10,
     "max_speed": 5,
     "colider": {
-        "radius": 0.03,
-        "position": [0,0.03]
+        "radius": 0.1,
+        "position": [0,0.15]
     },
     "animations": {
         "idling": [
@@ -25,7 +26,7 @@
                 "events": [],
                 "texture": {
                     "path": "./assets/characters/Lee.png",
-					"scale": 4,
+					"scale": 2,
 					"offset":[-29,0],
 					"position":[4,230],
 					"dimensions":[58,87]
@@ -46,7 +47,7 @@
                 "events": [],
                 "texture": {
                     "path": "./assets/characters/Lee.png",
-					"scale": 4,
+					"scale": 2,
 					"offset":[-28,-1],
 					"position":[57,230],
 					"dimensions":[54,87]
@@ -67,7 +68,7 @@
                 "events": [],
                 "texture": {
                     "path": "./assets/characters/Lee.png",
-					"scale": 4,
+					"scale": 2,
 					"offset":[-25,-1],
 					"position":[108,230],
 					"dimensions":[53,87]
@@ -88,7 +89,7 @@
                 "events": [],
                 "texture": {
                     "path": "./assets/characters/Lee.png",
-					"scale": 4,
+					"scale": 2,
 					"offset":[-28,-1],
 					"position":[57,230],
 					"dimensions":[54,87]
@@ -111,7 +112,7 @@
                 "events": [],
                 "texture": {
                     "path": "./assets/characters/Lee.png",
-					"scale": 4,
+					"scale": 2,
 					"offset":[-26,0],
 					"position":[6,20],
 					"dimensions":[52,81]
@@ -132,7 +133,7 @@
                 "events": [],
                 "texture": {
                     "path": "./assets/characters/Lee.png",
-					"scale": 4,
+					"scale": 2,
 					"offset":[-29,0],
 					"position":[56,20],
 					"dimensions":[52,81]
@@ -153,7 +154,7 @@
                 "events": [],
                 "texture": {
                     "path": "./assets/characters/Lee.png",
-					"scale": 4,
+					"scale": 2,
 					"offset":[-27,0],
 					"position":[110,20],
 					"dimensions":[52,81]
@@ -174,7 +175,7 @@
                 "events": [],
                 "texture": {
                     "path": "./assets/characters/Lee.png",
-					"scale": 4,
+					"scale": 2,
 					"offset":[-29,0],
 					"position":[56,20],
 					"dimensions":[52,81]
@@ -182,9 +183,52 @@
 				"hold": 5
             }
 		],
-        "jump": [],
-        "rizing": [],
-        "falling": [],
+        "rizing": [
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.5,
+                            "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "hit_sircles": [],
+                "events": [],
+                "texture": {
+                    "path": "./assets/characters/Lee.png",
+					"scale": 2,
+					"offset":[-16,16],
+					"position":[312,230],
+					"dimensions":[32,88]
+                },
+				"hold": 5
+            }
+		],
+        "falling": [
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.5,
+                            "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "hit_sircles": [],
+                "events": [],
+                "texture": {
+                    "path": "./assets/characters/Lee.png",
+					"scale": 2,
+					"offset":[-16,0],
+					"position":[348,230],
+					"dimensions":[32,88]
+                },
+				"hold": 5
+            }
+		],
         "light_attack": [],
         "heavy_attack": [],
         "air_born_light_attack": [],

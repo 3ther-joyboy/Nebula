@@ -1,4 +1,5 @@
 {
+	"render_colission_boxes": true,
 	"background": {
 		"path": "./assets/maps/test_map/brawhala.png",
 		"dimensions":[728,409],
@@ -8,7 +9,7 @@
 	},
 	"stage": {
 		"path": "./assets/maps/test_map/test_map.png",
-		"scale": 5,
+		"scale": 2.5,
 		"offset":[-256,-256],
 		"position":[0,0],
 		"dimensions":[512,512]
@@ -20,7 +21,6 @@
 		"position":[0,0],
 		"dimensions":[1920,1222]
 	},
-	"render_colission_boxes": true,
 	"statics": [
 		{
 			"comment": "Main platform",
@@ -61,7 +61,7 @@
 		{
 			"comment": "Main iland left wall",
 			"position": [-1.8,-0.88],
-			"size": 1.2,
+			"size": 1.1,
 			"rotation": "Left"
 		},
 		{
