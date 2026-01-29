@@ -3,13 +3,59 @@ pub mod base;
 pub mod game;
 
 use std::thread;
+use clap::Parser;
+
+/// Simple program to greet a person
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    /// Server addres and port.
+    #[arg(short, long, default_value_t = String::from("localhost:3621"))]
+    addres: String,
+    /// Server acces password
+    #[arg(short, long, default_value_t = String::new())]
+    password: String,
+    /// Refresh rate (miliseconds)
+    #[arg(short, long, default_value_t = 16)]
+    time: u32,
+    /// Starting map id
+    #[arg(short, long, default_value_t = 1)]
+    map: usize,
+
+    /// Start without a server
+    #[arg(short, long, default_value_t = false)]
+    no_server: bool,
+
+    /// Client name
+    #[arg(short, long)]
+    client: Option<String>,
+}
+
 
 #[macro_use]
 extern crate glium;
 fn main() {
-    let _ = thread::spawn(||
-            game::Game::new(String::from(""),String::from("localhost:3621"),40,1).start()
-        );
-    let _ = client::Client::new(String::from(""),String::from("Kuba"),String::from("localhost:3621"),40).start();
+    let args = Args::parse();
+
+    let password = args.password.clone();
+    let time = args.time;
+    let addres = args.addres.clone();
+    let opt_client = args.client.clone();
+
+    let opt_server = if !args.no_server {
+            Some( thread::spawn(move || {
+                    game::Game::new(args.password,args.addres,args.time,args.map).start();
+                }))
+        } else {
+            None
+        };
+
+    if let Some(client) = opt_client {
+        let mut client = client::Client::new(password,client,addres,time);
+        client.start()
+    } else if let Some(server) = opt_server {
+        let _ = server.join().unwrap();
+    }
+
 }
 

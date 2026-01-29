@@ -9,7 +9,6 @@ use std::time::Duration;
 use std::collections::HashMap;
 use std::thread;
 use crate::game::networking::*;
-use uuid::Uuid;
 use crate::game::{
     character::Character,
     map::*,
@@ -31,7 +30,7 @@ pub struct Player {
 impl Player {
     pub fn new(name: String) -> Player {
         Player {
-            id: Uuid::new_v4().to_string(),
+            id: uuid::Uuid::new_v4().to_string(),
             last_ping: 0,
             name,
             instance: None,

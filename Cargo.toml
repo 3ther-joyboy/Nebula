@@ -13,5 +13,6 @@ image = "0.25.9"      # Images
 chrono = "0.4.42"     # Time and Date lib
 serde_json = "1.0.145"# Serialization to JSON
 serde = { version = "1.0.228", features = ["derive"] } # Serialization
-uuid = { version = "1.18.1", features = ["v4"]}
 reqwest = { version = "0.12.24", features = ["blocking"]}   # Http request lib
+uuid = { version = "1.18.1", features = ["v4"]}
+clap = { version = "4.5.55", features = ["derive"] }
