@@ -106,12 +106,22 @@ impl ResponseStatus {
 pub enum BodyType {
     HTML,
     JSON,
+    Binary,
 }
 impl BodyType {
+    pub fn from_string(body_type: &str) -> Option<BodyType> {
+        match body_type {
+            "text/html" => Some(BodyType::HTML),
+            "application/json" => Some(BodyType::JSON),
+            "application/binary" => Some(BodyType::Binary),
+            _ => None,
+        }
+    }
     pub fn to_string(&self) -> String {
         match self {
             BodyType::HTML => String::from("text/html"),
             BodyType::JSON => String::from("application/json"),
+            BodyType::Binary => String::from("application/binary"),
         }
     }
 }

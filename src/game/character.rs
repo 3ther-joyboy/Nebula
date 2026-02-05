@@ -226,12 +226,12 @@ impl CharacterInstance {
             }
         }
     }
-    pub fn update(&mut self, char_sheet: &Character, map: &crate::game::MapInformation) {
-        const DELTA: f32 = 1.0/40.0;
+    pub fn update(&mut self, char_sheet: &Character, map: &crate::game::MapInformation,delta: &f32) {
         const GRAVITY: f32 = 0.04;
+
         self.update_animation(char_sheet);
 
-        self.velocity[1] -= DELTA * GRAVITY;
+        self.velocity[1] -= delta * GRAVITY;
         self.airborn = true;
 
 
@@ -287,8 +287,8 @@ impl CharacterInstance {
             Some(ref some) => {
                 self.direction = some.clone();
                 match some {
-                    Direction::Left => {self.velocity[0] -= 0.005},
-                    Direction::Right => {self.velocity[0] += 0.005},
+                    Direction::Left => {self.velocity[0] -= 0.05 * delta},
+                    Direction::Right => {self.velocity[0] += 0.05 * delta},
                 }
             },
             None => {},

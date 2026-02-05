@@ -45,10 +45,10 @@ pub struct Client {
     game_pointer: Option<GameRanderer>,
 
     input_map: HashMap<KeyCode,InputEvents>,
-    refresh_rate: u32,
+    refresh_rate: f32,
 }
 impl Client {
-    pub fn new(password: String, name: String, addres: String, refresh_rate: u32) -> Client {
+    pub fn new(password: String, name: String, addres: String, refresh_rate: f32) -> Client {
         let mut input_map = HashMap::new();
         input_map.insert(KeyCode::KeyA,InputEvents::Left);
         input_map.insert(KeyCode::ArrowLeft,InputEvents::Left);
@@ -83,7 +83,7 @@ impl Client {
         let password = String::new();
         let name = String::from("User");
         let addres = String::from("localhost:3621");
-        Self::new(password,name,addres,30)
+        Self::new(password,name,addres,60.0)
     }
     pub fn start(&mut self) {
         let (map_trans, map_rec) = mpsc::channel::<Map>();
@@ -91,7 +91,7 @@ impl Client {
         let addres = self.addres.clone();
         let input_map = self.input_map.clone();
         let (name,password) = (self.name.clone(),self.password.clone());
-        let refresh_rate = self.refresh_rate.into();
+        let refresh_rate = self.refresh_rate;
 
 
         let _network = thread::spawn(move || {
@@ -105,7 +105,11 @@ impl Client {
                 Quit,
             }
             let mut input_type = InputTypeEvent::Join;
+
+            let frame_time = std::time::Duration::from_secs_f32(1.0/refresh_rate);
             loop {
+                let next_frame = std::time::Instant::now();
+
                 for key_input in input_rec.try_iter() {
                     match key_input {
                         WindowEvent::KeyboardInput{event, ..} => {
@@ -178,7 +182,12 @@ impl Client {
                 }
                 input_type = InputTypeEvent::Normal;
                 
-                thread::sleep(std::time::Duration::from_millis(refresh_rate));
+                let wait = if let Some(wait) = frame_time.checked_sub(std::time::Instant::now() - next_frame) {
+                    wait
+                } else {
+                    std::time::Duration::ZERO
+                };
+                thread::sleep(wait);
             }
         });
 

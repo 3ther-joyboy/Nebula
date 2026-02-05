@@ -161,11 +161,11 @@ impl Map {
             }
         }
     }
-    pub fn update(&mut self, char_sheet: &HashMap<u32,Character>,map_pool: &HashMap<usize,MapInformation>) {
+    pub fn update(&mut self, char_sheet: &HashMap<u32,Character>,map_pool: &HashMap<usize,MapInformation>, delta: &f32) {
         if let Some(map) = map_pool.get(&self.map_id) {
             for (_,player) in &mut self.characters.iter_mut() {
                 if let Some(sheet) = &char_sheet.get(&player.character) {
-                    player.update(sheet,map);
+                    player.update(sheet,map,delta);
                 }
             }
         }

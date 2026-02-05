@@ -47,7 +47,7 @@ pub struct Game {
 
     map: Arc<Mutex<Option<Map>>>,
     map_pool: HashMap<usize,MapInformation>,
-    refresh_rate: u32,
+    refresh_rate: f32,
 }
 impl Game {
     pub fn default() -> Game {
@@ -58,10 +58,10 @@ impl Game {
             players: Arc::new(HashMap::new().into()),
             map: Arc::new(Some(Map::test()).into()),
             map_pool: MapInformation::load_all(None),
-            refresh_rate: 30,
+            refresh_rate: 60.0,
         }
     }
-    pub fn new(password: String,addres: String,refresh_rate: u32,map_id: usize) -> Game {
+    pub fn new(password: String,addres: String,refresh_rate: f32,map_id: usize) -> Game {
         Game {
             password,
             addres,
@@ -85,19 +85,24 @@ impl Game {
                 Self::handle_connection(stream,&map_pointer,&player_pointer,&password);
             }
         );
+        let delta = 1.0/self.refresh_rate;
+        let frame_time = std::time::Duration::from_secs_f32(delta);
         loop {
-            thread::sleep(Duration::from_millis(self.refresh_rate.into()));
+            let next_frame = std::time::Instant::now();
+
             let players_input = Self::players_clone(&self.players);
             loop {
                 if let Ok(ref mut map_opt) = self.map.try_lock() &&
                     let Some(map) = &mut **map_opt {
                         map.counter += 1;
                         map.set_inputs(players_input);
-                        map.update(&self.characters,&self.map_pool);
+                        map.update(&self.characters,&self.map_pool,&delta);
                         break;
 
                 }
             }
+
+            thread::sleep(frame_time-(std::time::Instant::now() - next_frame));
         }
     }
     fn players_clone(players_ref: &Arc<Mutex<HashMap<String,Player>>>) -> HashMap<String,Player> {

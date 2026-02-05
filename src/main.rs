@@ -15,9 +15,9 @@ struct Args {
     /// Server acces password
     #[arg(short, long, default_value_t = String::new())]
     password: String,
-    /// Refresh rate (miliseconds)
-    #[arg(short, long, default_value_t = 16)]
-    time: u32,
+    /// Refresh rate (tps/fps)
+    #[arg(short, long, default_value_t = 60.0)]
+    time: f32,
     /// Starting map id
     #[arg(short, long, default_value_t = 1)]
     map: usize,
