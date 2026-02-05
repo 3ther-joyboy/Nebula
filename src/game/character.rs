@@ -78,7 +78,6 @@ pub struct Character {
     max_speed: f32,
     colider: Sircle,
 
-    debug: bool,
     animations: Animations,
 }
 impl Character {
@@ -90,7 +89,6 @@ impl Character {
             air_jump_count: 1,
             aceleration: 10.0,
             max_speed: 5.0,
-            debug: true,
             colider: Sircle {radius: 0.3, position: [0.0,0.3]},
             animations: Animations::test(),
         }
@@ -229,6 +227,8 @@ impl CharacterInstance {
     pub fn update(&mut self, char_sheet: &Character, map: &crate::game::MapInformation,delta: &f32) {
         const GRAVITY: f32 = 0.04;
 
+
+
         self.update_animation(char_sheet);
 
         self.velocity[1] -= delta * GRAVITY;
@@ -277,35 +277,57 @@ impl CharacterInstance {
         } else {
             self.position = new_location;
         }
-
-
-        if self.input.jump {
-            self.velocity[1] = 0.03;
-        }
-        let input_direction = self.input.dir.clone();
-        match input_direction {
-            Some(ref some) => {
-                self.direction = some.clone();
-                match some {
-                    Direction::Left => {self.velocity[0] -= 0.05 * delta},
-                    Direction::Right => {self.velocity[0] += 0.05 * delta},
+        match self.state.clone() {
+            State::Actionable => {
+                if self.input.jump && !self.airborn {
+                    self.velocity[1] = 0.05;
+                }
+                let input_direction = self.input.dir.clone();
+                match input_direction {
+                    Some(ref some) => {
+                        self.direction = some.clone();
+                        match some {
+                            Direction::Left => {self.velocity[0] -= 0.05 * delta},
+                            Direction::Right => {self.velocity[0] += 0.05 * delta},
+                        }
+                    },
+                    None => {},
+                }
+                if self.input.heavy_attack {
+                    if self.airborn {
+                        self.change_animation(AnimationState::AirBornHeavyAttack);
+                    } else {
+                        self.change_animation(AnimationState::HeavyAttack);
+                    }
+                } else if self.input.light_attack {
+                    if self.airborn {
+                        self.change_animation(AnimationState::AirBornLightAttack);
+                    } else {
+                        self.change_animation(AnimationState::LightAttack);
+                    }
+                } else if self.animation.looping() {
+                    if self.airborn {
+                        if self.velocity[1] > 0.0 {
+                            self.change_animation(AnimationState::Rizing);
+                        } else {
+                            self.change_animation(AnimationState::Falling);
+                        }
+                    } else {
+                        match input_direction {
+                            Option::Some(_) => {self.change_animation(AnimationState::Running)},
+                            Option::None => {self.change_animation(AnimationState::Idling)},
+                        }
+                    }
                 }
             },
-            None => {},
-        }
-        if self.animation.looping() {
-            if self.airborn {
-                if self.velocity[1] > 0.0 {
-                    self.change_animation(AnimationState::Rizing);
+            State::HitStun(wait) => {
+                if wait <= 0 {
+                    self.state = State::Actionable;
                 } else {
-                    self.change_animation(AnimationState::Falling);
-                }
-            } else {
-                match input_direction {
-                    Option::Some(_) => {self.change_animation(AnimationState::Running)},
-                    Option::None => {self.change_animation(AnimationState::Idling)},
+                    self.state = State::HitStun(wait-1);
                 }
             }
+            State::Acting => {}
         }
     }
     fn change_animation(&mut self, anim: AnimationState) {
@@ -316,11 +338,14 @@ impl CharacterInstance {
         }
     }
     fn update_animation(&mut self,character: &Character) {
-        let anim = &character.get_animations(&self.animation);
+        let anim: &Vec<AnimationFrame> = &character.get_animations(&self.animation);
 
         if self.animation_hold >= anim[self.animation_frame].hold {
             if self.animation_frame + 1 >= anim.len() {
                 self.animation_frame = 0;
+                if !self.animation.looping() {
+                    self.animation = AnimationState::Idling;
+                }
             } else {
                 self.animation_frame += 1;
             }
@@ -329,18 +354,44 @@ impl CharacterInstance {
             self.animation_hold += 1
         }
     }
+    pub fn get_hitboxes(&self, char_sheet: &HashMap<u32,Character>) -> (Vec<HitSircle>,Vec<ColisionSircle>) {
+        let character = char_sheet.get(&self.character).expect("Character that is trying to be rendered not found");
+        let anim = character.get_animations(&self.animation);
+        let dir = match self.direction {
+            Direction::Left => -1.0,
+            Direction::Right => 1.0,
+        };
+
+        let mut hit: Vec<HitSircle> = anim[self.animation_frame].hit_sircles.clone();
+        hit.iter_mut().for_each(|x| {x.colision_shape.position[0] *= dir;});
+
+        let mut hurt: Vec<ColisionSircle> = anim[self.animation_frame].hurt_sircles.clone();
+        hurt.iter_mut().for_each(|x| {x.colision_shape.position[0] *= dir;});
+
+        (hit,hurt)
+    }
+    pub fn draw_hurtbox(&self,display: &mut Display<WindowSurface>,frame_display: &mut glium::Frame,char_sheet: &HashMap<u32,Character>) {
+        const BLUISH: [f32;4] = [0.1,0.0,1.0,1.0];
+        for hurt_sir in &self.get_hitboxes(char_sheet).1 {
+            hurt_sir.colision_shape.draw(display,frame_display,&self.position,BLUISH);
+        }
+    }
     pub fn draw_hitbox(&self,display: &mut Display<WindowSurface>,frame_display: &mut glium::Frame,char_sheet: &HashMap<u32,Character>) {
+        const REDISH: [f32;4] = [1.0,0.0,0.1,1.0];
+        for hit_sir in &self.get_hitboxes(char_sheet).0 {
+            hit_sir.colision_shape.draw(display,frame_display,&self.position,REDISH);
+        }
     }
     pub fn draw_colision_box(&self,display: &mut Display<WindowSurface>,frame_display: &mut glium::Frame,char_sheet: &HashMap<u32,Character>) {
+        let character = char_sheet.get(&self.character).expect("Character that is trying to be rendered not found");
+        const GREENISH: [f32;4] = [0.0,0.3,0.6,1.0];
+        character.colider.draw(display,frame_display,&self.position,GREENISH)
     }
     pub fn draw(&self,display: &mut Display<WindowSurface>,frame_display: &mut glium::Frame,char_sheet: &HashMap<u32,Character>) {
         let character = char_sheet.get(&self.character).expect("Character that is trying to be rendered not found");
         let position = self.position;
         let frame = self.animation_frame;
-        character.get_animations(&self.animation)[frame].texture.draw_on(display, frame_display, position,&self.direction);
-        if character.debug {
-            const GREENISH: [f32;4] = [0.0,0.3,0.6,1.0];
-            character.colider.draw(display,frame_display,&self.position,GREENISH)
-        }
+        character.get_animations(&self.animation).get(frame).expect(&format!("This character doesnt have frame: {frame}, in animation: {}",self.animation.to_str()))
+            .texture.draw_on(display, frame_display, position,&self.direction);
     }
 }

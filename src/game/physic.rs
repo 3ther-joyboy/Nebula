@@ -31,7 +31,7 @@ pub struct ColisionSircle {
 }
 #[derive(Serialize, Deserialize, Clone)]
 pub struct HitSircle {
-    colision_shape: Sircle,
+    pub colision_shape: Sircle,
     impact_events: Vec<FrameEvent>
 }
 #[derive(Serialize, Deserialize, Clone)]
@@ -71,6 +71,18 @@ pub enum AnimationState {
     AirBornHeavyAttack,
 }
 impl AnimationState {
+    pub fn to_str(&self) -> &str {
+        match self {
+            AnimationState::Idling => "Idling",
+            AnimationState::Running => "Running",
+            AnimationState::Rizing => "Rizing",
+            AnimationState::Falling => "Falling",
+            AnimationState::LightAttack => "Light Attack",
+            AnimationState::HeavyAttack => "Heavy Attack",
+            AnimationState::AirBornLightAttack => "Air Light Attack",
+            AnimationState::AirBornHeavyAttack => "Air Heavy Attack",
+        } 
+    }
     pub fn looping(&self) -> bool {
         match self {
             AnimationState::Idling => {true},

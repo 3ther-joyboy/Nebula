@@ -46,6 +46,8 @@ pub struct Client {
 
     input_map: HashMap<KeyCode,InputEvents>,
     refresh_rate: f32,
+
+    render: crate::client::renderer::RenderOptions,
 }
 impl Client {
     pub fn new(password: String, name: String, addres: String, refresh_rate: f32) -> Client {
@@ -77,8 +79,15 @@ impl Client {
             game_pointer: Option::None,
             input_map,
             refresh_rate,
+
+            render: crate::client::renderer::RenderOptions::new(),
         }
     } 
+    pub fn custom_rendering(&mut self,coliders: bool, hitboxes: bool, hurtboxes: bool) {
+        self.render.hitboxes = hitboxes;
+        self.render.coliders = coliders;
+        self.render.hurtboxes = hurtboxes;
+    }
     pub fn default() -> Client {
         let password = String::new();
         let name = String::from("User");
@@ -193,7 +202,7 @@ impl Client {
 
         let event_loop = EventLoop::builder().build().expect("event loop building");
         let (window, display) = SimpleWindowBuilder::new().build(&event_loop);
-        let mut game_renderer = GameRanderer::new(map_rec,input_trans, window, display);
+        let mut game_renderer = GameRanderer::new(map_rec,input_trans, window, display,&self.render);
         let _ = event_loop.run_app(&mut game_renderer);
     }
 }

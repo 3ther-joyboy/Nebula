@@ -16,19 +16,28 @@ struct Args {
     #[arg(short, long, default_value_t = String::new())]
     password: String,
     /// Refresh rate (tps/fps)
-    #[arg(short, long, default_value_t = 60.0)]
+    #[arg(short, long, default_value_t = 30.0)]
     time: f32,
     /// Starting map id
     #[arg(short, long, default_value_t = 1)]
     map: usize,
+    /// Client name
+    #[arg(short, long)]
+    client: Option<String>,
 
     /// Start without a server
     #[arg(short, long, default_value_t = false)]
     no_server: bool,
+    /// Renders collisions
+    #[arg(long, default_value_t = false)]
+    coliders: bool,
+    /// Renders hitboxes
+    #[arg(long, default_value_t = false)]
+    hitboxes: bool,
+    /// Renders hurtboxes
+    #[arg(long, default_value_t = false)]
+    hurtboxes: bool,
 
-    /// Client name
-    #[arg(short, long)]
-    client: Option<String>,
 }
 
 
@@ -52,6 +61,7 @@ fn main() {
 
     if let Some(client) = opt_client {
         let mut client = client::Client::new(password,client,addres,time);
+        client.custom_rendering(args.coliders,args.hitboxes,args.hurtboxes);
         client.start()
     } else if let Some(server) = opt_server {
         let _ = server.join().unwrap();

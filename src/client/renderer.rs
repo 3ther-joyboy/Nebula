@@ -179,9 +179,26 @@ pub struct GameRanderer {
 
     character_sheet: HashMap<u32,Character>,
     map_pool: HashMap<usize,MapInformation>,
+
+    options: RenderOptions, 
+}
+#[derive(Clone)]
+pub struct RenderOptions {
+    pub hitboxes: bool,
+    pub hurtboxes: bool,
+    pub coliders: bool,
+}
+impl RenderOptions {
+    pub fn new() -> Self {
+        RenderOptions {
+            hitboxes: false,
+            hurtboxes: false,
+            coliders: false,
+        }
+    }
 }
 impl GameRanderer {
-    pub fn new(map_channel: Receiver<Map>, input_channel: Sender<WindowEvent>, window: Window, mut display: Display<WindowSurface> ) -> GameRanderer {
+    pub fn new(map_channel: Receiver<Map>, input_channel: Sender<WindowEvent>, window: Window, mut display: Display<WindowSurface>, options: &RenderOptions) -> GameRanderer {
         GameRanderer {
             map_channel,
             input_channel,
@@ -189,6 +206,7 @@ impl GameRanderer {
             character_sheet: Character::load_all(Some(&mut display)),
             map_pool: MapInformation::load_all(Some(&mut display)),
             display,
+            options: options.clone(),
         }
     }
 }
@@ -251,7 +269,7 @@ impl ApplicationHandler for GameRanderer {
                     }
                     if let Some(map) = map_info { //todo move to Map.rs
                         map.draw_foreground(&mut self.display,&mut target);
-                        if map.render_colission_boxes {
+                        if self.options.coliders {
                             for collision in &map.statics {
                                 let pos = collision.position;
                                 let off = collision.size/2.0;
@@ -272,8 +290,23 @@ impl ApplicationHandler for GameRanderer {
                             }
                         }
                     }
-                    for (_,character) in map.characters {
+                    for (_,character) in &map.characters {
                         character.draw(&mut self.display,&mut target,&self.character_sheet);
+                    }
+                    if self.options.coliders {
+                        for (_,character) in &map.characters {
+                            character.draw_colision_box(&mut self.display,&mut target,&self.character_sheet);
+                        }
+                    }
+                    if self.options.hitboxes {
+                        for (_,character) in &map.characters {
+                            character.draw_hitbox(&mut self.display,&mut target,&self.character_sheet);
+                        }
+                    }
+                    if self.options.hurtboxes {
+                        for (_,character) in &map.characters {
+                            character.draw_hurtbox(&mut self.display,&mut target,&self.character_sheet);
+                        }
                     }
                     target.finish().unwrap();
                 }
