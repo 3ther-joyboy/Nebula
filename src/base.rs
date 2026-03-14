@@ -1,4 +1,3 @@
-pub mod vector2;
 pub mod sircle;
 
 pub struct Math;

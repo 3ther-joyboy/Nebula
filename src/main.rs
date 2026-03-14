@@ -5,7 +5,7 @@ pub mod game;
 use std::thread;
 use clap::Parser;
 
-/// Simple program to greet a person
+/// Settings for Nebula game:
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
@@ -15,6 +15,9 @@ struct Args {
     /// Server acces password
     #[arg(short, long, default_value_t = String::new())]
     password: String,
+    /// Assets root path
+    #[arg(long, default_value_t = String::from("./assets/"))]
+    assets: String,
     /// Refresh rate (tps/fps)
     #[arg(short, long, default_value_t = 30.0)]
     time: f32,
@@ -50,17 +53,18 @@ fn main() {
     let time = args.time;
     let addres = args.addres.clone();
     let opt_client = args.client.clone();
+    let assets = args.assets.clone();
 
     let opt_server = if !args.no_server {
             Some( thread::spawn(move || {
-                    game::Game::new(args.password,args.addres,args.time,args.map).start();
+                    game::Game::new(args.password,args.addres,args.time,args.map,args.assets).start();
                 }))
         } else {
             None
         };
 
     if let Some(client) = opt_client {
-        let mut client = client::Client::new(password,client,addres,time);
+        let mut client = client::Client::new(password,client,addres,time,assets);
         client.custom_rendering(args.coliders,args.hitboxes,args.hurtboxes);
         client.start()
     } else if let Some(server) = opt_server {

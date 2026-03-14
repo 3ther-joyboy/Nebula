@@ -1,3 +1,4 @@
+use crate::game::physic::FrameEvent::SetVelocity;
 use std::{
     collections::HashMap,
     fs::{
@@ -28,6 +29,8 @@ use crate::{
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Animations {
+    #[serde(default)]
+    hurt: Vec<AnimationFrame>,
     idling: Vec<AnimationFrame>,
     running: Vec<AnimationFrame>,
     rizing: Vec<AnimationFrame>,
@@ -39,6 +42,8 @@ pub struct Animations {
 }
 impl Animations {
     pub fn update_textures(&mut self, display: &mut Display<WindowSurface>) {
+        for frame in &mut self.hurt {frame.texture.load_texture(display)}
+
         for frame in &mut self.idling {frame.texture.load_texture(display)}
         for frame in &mut self.running {frame.texture.load_texture(display)}
         for frame in &mut self.rizing {frame.texture.load_texture(display)}
@@ -58,6 +63,7 @@ impl Animations {
         };
         Animations {
             idling: vec![empty_frame],
+            hurt: Vec::new(),
             running: Vec::new(),
             rizing: Vec::new(),
             falling: Vec::new(),
@@ -73,7 +79,8 @@ pub struct Character {
     id: usize,
     name: String,
     weight: f32,
-    air_jump_count: u32,
+    jump: f32,
+    air_jump_count: u8,
     aceleration: f32,
     max_speed: f32,
     colider: Sircle,
@@ -87,6 +94,7 @@ impl Character {
             name: String::new(),
             weight: 1.0,
             air_jump_count: 1,
+            jump: 0.05,
             aceleration: 10.0,
             max_speed: 5.0,
             colider: Sircle {radius: 0.3, position: [0.0,0.3]},
@@ -97,8 +105,8 @@ impl Character {
         serde_json::to_string(self).unwrap()
     }
 
-    const CHAR_PATH: &str = "./assets/characters/";
-    pub fn load(char_id: u32,display_option: &mut Option<&mut Display<WindowSurface>>) -> Option<Character> {
+    const CHAR_PATH: &str = "characters/";
+    pub fn load(char_id: u32,display_option: &mut Option<&mut Display<WindowSurface>>, assets: &String) -> Option<Character> {
         if char_id == 0 {
             let mut default = Self::default();
             if let Some(ref mut display) = display_option.as_mut() {
@@ -107,7 +115,8 @@ impl Character {
             return Some(default);
         }
         let mut character_json = String::new();
-        if let Ok(mut file) = File::open(format!("{0}{char_id}.json",Self::CHAR_PATH)) && let Ok(_) = file.read_to_string(&mut character_json){
+        let path = format!("{assets}{0}{char_id}.json",Self::CHAR_PATH);
+        if let Ok(mut file) = File::open(path) && let Ok(_) = file.read_to_string(&mut character_json){
             let char_result = serde_json::from_str::<Self>(&character_json);
             match char_result {
                 Ok(mut output) => {
@@ -124,12 +133,12 @@ impl Character {
         }
         Option::None
     }
-    pub fn load_all(display: Option<&mut Display<WindowSurface>>) -> HashMap<u32,Character> {
+    pub fn load_all(display: Option<&mut Display<WindowSurface>>, assets: &String) -> HashMap<u32,Character> {
         let mut display: Option<&mut Display<WindowSurface>> = display;
 
         let mut out = HashMap::new();
-        out.insert(0,Self::load(0,&mut display).expect("Loading a default character failed.."));
-        if let Ok(items_directory) = fs::read_dir(Self::CHAR_PATH) {
+        out.insert(0,Self::load(0,&mut display, assets).expect("Loading a default character failed.."));
+        if let Ok(items_directory) = fs::read_dir(format!("{assets}{0}",Self::CHAR_PATH)) {
             for character_files in items_directory {
                 if  let Ok(something) = character_files &&
                     let Ok(file_type) = something.file_type() && // has a file type
@@ -140,7 +149,7 @@ impl Character {
                     name[name.len()-5..] == *".json" && // is last few chars ".json"
                     let Ok(id_number) = name[..name.len()-5].parse::<u32>() && // parse the the
                                                                                // name in to a number
-                    let Some(character) = Self::load(id_number,&mut display) { // is possible to load the character
+                    let Some(character) = Self::load(id_number,&mut display, assets) { // is possible to load the character
                                                                                
                     out.insert(id_number,character);
                 } 
@@ -148,8 +157,9 @@ impl Character {
         }
         out
     }
-    fn get_animations(&self, animation: &AnimationState) -> &Vec<AnimationFrame> {
+    pub fn get_animations(&self, animation: &AnimationState) -> &Vec<AnimationFrame> {
         match animation {
+            AnimationState::Damadged => {&self.animations.hurt},
             AnimationState::Idling => {&self.animations.idling},
             AnimationState::Running => {&self.animations.running},
             AnimationState::Rizing => {&self.animations.rizing},
@@ -169,7 +179,10 @@ pub struct CharacterInstance {
     pub position: [f32;2],
     velocity: [f32;2],
     direction: Direction,
+
     airborn: bool,
+    air_jump: u8,
+    air_action: u8,
 
     vournable: ColisionState,
     state: State,
@@ -183,6 +196,13 @@ pub struct CharacterInstance {
     pub input: CharacterInput
 }
 impl CharacterInstance {
+    const AIR_ACTION_DEFAULT: u8 = 2;
+    pub fn get_animation_frame(&self) -> usize {
+        self.animation_frame
+    }
+    pub fn get_animatin(&self) -> &AnimationState {
+        &self.animation
+    }
     pub fn new(character: u32,id: u32) -> CharacterInstance {
         CharacterInstance {
             character,
@@ -192,6 +212,8 @@ impl CharacterInstance {
             velocity: [0.0,0.0],
             direction: Direction::Right,
             airborn: true,
+            air_jump: 0,
+            air_action: Self::AIR_ACTION_DEFAULT,
             vournable: ColisionState::Vulnerable,
             state: State::Actionable,
             damage: 0.0,
@@ -204,9 +226,7 @@ impl CharacterInstance {
         }
     }
     pub fn reset(&mut self) {
-        self.animation = AnimationState::Idling;
-        self.position = [0.0,0.0];
-        self.velocity = [0.0,0.0];
+        *self = Self::new(self.character, self.object_id);
     }
     fn check_colision(&self, col: &ColisionPlane, char_sheet: &Character) -> bool {
         let mut colider = char_sheet.colider.clone();
@@ -224,14 +244,47 @@ impl CharacterInstance {
             }
         }
     }
+    pub fn hit_registration(&mut self,enemy: &Self, char_sheets: &HashMap<u32,Character>) {
+        let (_,hurt_sircles) = self.get_hitboxes(char_sheets);
+        let (hit_sircles,_) = enemy.get_hitboxes(char_sheets);
+
+        if let crate::game::physic::State::HitStun(_,(id,frame)) = self.state.clone() &&
+            id == enemy.object_id && frame == enemy.animation_frame {
+            return;
+        }
+
+        for hit_sircle in &hit_sircles {
+            for hurt_sircle in &hurt_sircles {
+                if hurt_sircle.colision_shape.overlap(&self.position,&hit_sircle.colision_shape,&enemy.position) {
+                    for event in &hit_sircle.impact_events {
+                            self.apply_frame_event(&event,enemy);
+                    }
+                    break;
+                }
+            }
+        }
+    }
     pub fn update(&mut self, char_sheet: &Character, map: &crate::game::MapInformation,delta: &f32) {
-        const GRAVITY: f32 = 0.04;
-
-
+        const GRAVITY: f32 = 0.1;
 
         self.update_animation(char_sheet);
 
-        self.velocity[1] -= delta * GRAVITY;
+        let multiplayer =
+            if 0.0 < self.velocity[1] {
+                if self.input.jump {
+                    0.5
+                } else {
+                    3.0
+                }
+            } else {
+                if self.input.down {
+                    5.0
+                } else {
+                    1.0
+                }
+            };
+
+        self.velocity[1] -= delta * GRAVITY * multiplayer;
         self.airborn = true;
 
 
@@ -255,6 +308,8 @@ impl CharacterInstance {
                         self.velocity[1] = 0.0;
                         self.velocity[0] *= 0.8;
                         self.airborn = false;
+                        self.air_jump = char_sheet.air_jump_count;
+                        self.air_action = Self::AIR_ACTION_DEFAULT;
                     },
                 Orientation::Right => 
                     if b_right && self.check_colision(col, &char_sheet) {
@@ -279,23 +334,12 @@ impl CharacterInstance {
         }
         match self.state.clone() {
             State::Actionable => {
-                if self.input.jump && !self.airborn {
-                    self.velocity[1] = 0.05;
-                }
-                let input_direction = self.input.dir.clone();
-                match input_direction {
-                    Some(ref some) => {
-                        self.direction = some.clone();
-                        match some {
-                            Direction::Left => {self.velocity[0] -= 0.05 * delta},
-                            Direction::Right => {self.velocity[0] += 0.05 * delta},
-                        }
-                    },
-                    None => {},
-                }
                 if self.input.heavy_attack {
                     if self.airborn {
-                        self.change_animation(AnimationState::AirBornHeavyAttack);
+                        if 0 < self.air_action {
+                            self.air_action -= 1;
+                            self.change_animation(AnimationState::AirBornHeavyAttack);
+                        }
                     } else {
                         self.change_animation(AnimationState::HeavyAttack);
                     }
@@ -305,7 +349,25 @@ impl CharacterInstance {
                     } else {
                         self.change_animation(AnimationState::LightAttack);
                     }
-                } else if self.animation.looping() {
+                } else {
+                    // Input Logick
+                    if self.input.jump && (!self.airborn || 0 < self.air_jump)  {
+                        self.velocity[1] = char_sheet.jump;
+                        if self.airborn {
+                            self.air_jump -= 1;
+                        }                    }
+                    let input_direction = self.input.dir.clone();
+                    match &input_direction {
+                        Some(some) => {
+                            self.direction = some.clone();
+                            let potentional_acel = char_sheet.aceleration * delta * some.to_float();
+                            if (self.velocity[0] + potentional_acel).abs() < char_sheet.max_speed{
+                                self.velocity[0] += potentional_acel;
+                            }
+                        },
+                        None => {},
+                    }
+                    // Idle Animation Logick
                     if self.airborn {
                         if self.velocity[1] > 0.0 {
                             self.change_animation(AnimationState::Rizing);
@@ -320,14 +382,18 @@ impl CharacterInstance {
                     }
                 }
             },
-            State::HitStun(wait) => {
+            State::HitStun(wait, enemy) => {
                 if wait <= 0 {
                     self.state = State::Actionable;
                 } else {
-                    self.state = State::HitStun(wait-1);
+                    self.state = State::HitStun(wait-1,enemy);
                 }
-            }
-            State::Acting => {}
+            },
+            State::Acting => {},
+        }
+
+        if Math::distance(&self.position,&[0.0,0.0]) > 5.0 {
+            self.reset();
         }
     }
     fn change_animation(&mut self, anim: AnimationState) {
@@ -335,6 +401,49 @@ impl CharacterInstance {
             self.animation = anim;
             self.animation_hold = 0;
             self.animation_frame = 0;
+        }
+    }
+    fn apply_frame_event(&mut self,event: &FrameEvent, source: &Self) {
+        match event {
+            FrameEvent::SetVelocityFromPoint(vec,force) => {
+                todo!();
+            },
+            FrameEvent::AddVelocityFromPoint(vec,force) => {
+                todo!();
+            },
+            FrameEvent::SetVelocity(vec) => {
+                self.velocity[0] = vec[0] * source.direction.to_float();
+                self.velocity[1] = vec[1];
+            },
+            FrameEvent::AddVelocity(vec) => {
+                self.velocity[0] += vec[0] * source.direction.to_float() * self.damage;
+                self.velocity[1] += vec[1] * self.damage;
+            },
+            FrameEvent::MoveBy(pos) => {
+                self.position[0] += pos[0] * source.direction.to_float() * self.damage;
+                self.position[1] += pos[1] * self.damage;
+            },
+            FrameEvent::DealDamage(amount) => {
+                self.damage += amount;
+            },
+            FrameEvent::ApplyHitStun(amount) => {
+                self.change_animation(AnimationState::Damadged);
+                let enemy_id = (source.object_id,source.animation_frame);
+                match self.state.clone() {
+                    State::HitStun(old,_) => {
+                        self.state = State::HitStun(old + amount,enemy_id);
+                    },
+                    _ => {
+                        self.state = State::HitStun(*amount,enemy_id);
+                    },
+                }
+            },
+            FrameEvent::ChangeColisionState(col_state) => {
+                self.vournable = col_state.clone();
+            },
+            FrameEvent::ChangeActionState(state) => {
+                self.state = state.clone();
+            },
         }
     }
     fn update_animation(&mut self,character: &Character) {
@@ -352,6 +461,10 @@ impl CharacterInstance {
             self.animation_hold = 0;
         } else {
             self.animation_hold += 1
+        }
+
+        for event in &anim[self.animation_frame].events {
+            self.apply_frame_event(event,&self.clone());
         }
     }
     pub fn get_hitboxes(&self, char_sheet: &HashMap<u32,Character>) -> (Vec<HitSircle>,Vec<ColisionSircle>) {

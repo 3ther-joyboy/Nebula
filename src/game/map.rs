@@ -28,7 +28,6 @@ pub struct MapInformation {
     background: Option<Texture>,
     stage: Option<Texture>,
     foreground: Option<Texture>,
-    pub render_colission_boxes: bool,
     pub statics: Vec<ColisionPlane>
 }
 impl MapInformation {
@@ -50,7 +49,6 @@ impl MapInformation {
             background: Option::None,
             stage: Option::None,
             foreground: Option::None,
-            render_colission_boxes: true,
             statics: Vec::new(),
         }
     }
@@ -68,8 +66,8 @@ impl MapInformation {
     pub fn to_string(&self) -> String {
         serde_json::to_string(self).unwrap()
     }
-    const MAP_PATH: &str = "./assets/maps/";
-    pub fn load(map_id: usize, display_option: &mut Option<&mut Display<WindowSurface>>) -> Option<MapInformation> {
+    const MAP_PATH: &str = "maps/";
+    pub fn load(map_id: usize, display_option: &mut Option<&mut Display<WindowSurface>>, assets: &String) -> Option<MapInformation> {
         if map_id == 0 {
             let mut default = Self::default();
             if let Some(ref mut display) = display_option.as_mut() {
@@ -78,7 +76,7 @@ impl MapInformation {
             return Some(default);
         }
         let mut character_json = String::new();
-        if let Ok(mut file) = File::open(format!("{0}{map_id}.json",Self::MAP_PATH)) && let Ok(_) = file.read_to_string(&mut character_json){
+        if let Ok(mut file) = File::open(format!("{assets}{0}{map_id}.json",Self::MAP_PATH)) && let Ok(_) = file.read_to_string(&mut character_json){
             let char_result = serde_json::from_str::<Self>(&character_json);
             match char_result {
                 Ok(mut output) => {
@@ -95,12 +93,12 @@ impl MapInformation {
         }
         Option::None
     }
-    pub fn load_all(display: Option<&mut Display<WindowSurface>>) -> HashMap<usize,MapInformation> {
+    pub fn load_all(display: Option<&mut Display<WindowSurface>>, assets: &String) -> HashMap<usize,MapInformation> {
         let mut display: Option<&mut Display<WindowSurface>> = display;
 
         let mut out = HashMap::new();
-        out.insert(0,Self::load(0,&mut display).expect("Loading a default map failed.."));
-        if let Ok(items_directory) = fs::read_dir(Self::MAP_PATH) {
+        out.insert(0,Self::load(0,&mut display, assets).expect("Loading a default map failed.."));
+        if let Ok(items_directory) = fs::read_dir(format!("{assets}{0}",Self::MAP_PATH)) {
             for character_files in items_directory {
                 if  let Ok(something) = character_files &&
                     let Ok(file_type) = something.file_type() && // has a file type
@@ -111,7 +109,7 @@ impl MapInformation {
                     name[name.len()-5..] == *".json" && // is last few chars ".json"
                     let Ok(id_number) = name[..name.len()-5].parse::<usize>() && // parse the the
                                                                                // name in to a number
-                    let Some(map_info) = Self::load(id_number,&mut display) { // is possible to load the character
+                    let Some(map_info) = Self::load(id_number,&mut display, assets) { // is possible to load the character
                     out.insert(id_number,map_info);
                 } 
             }
@@ -129,6 +127,13 @@ pub struct Map {
     pub map_id: usize,
 }
 impl Map {
+    pub fn from_bytes(stream: &[u8]) -> Option<Self> {
+        todo!();
+    }
+    pub fn as_bytes(&self) -> Vec<u8> {
+        let mut out: Vec<u8> = Vec::new();
+        todo!();
+    }
     pub fn new_istance(&mut self, character: u32) -> u32 {
         self.characters.insert(self.current_id,CharacterInstance::new(character,self.current_id));
         let out = self.current_id;
@@ -163,6 +168,17 @@ impl Map {
     }
     pub fn update(&mut self, char_sheet: &HashMap<u32,Character>,map_pool: &HashMap<usize,MapInformation>, delta: &f32) {
         if let Some(map) = map_pool.get(&self.map_id) {
+            // Hitbox check
+            let static_enemies = self.characters.clone();
+            for (main,player) in &mut self.characters.iter_mut() {
+                for (secondary,enemy) in static_enemies.iter() {
+                    if main != secondary {
+                        player.hit_registration(&enemy,char_sheet);
+                    }
+                }
+            }
+
+            // Next frame
             for (_,player) in &mut self.characters.iter_mut() {
                 if let Some(sheet) = &char_sheet.get(&player.character) {
                     player.update(sheet,map,delta);

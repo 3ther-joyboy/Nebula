@@ -101,7 +101,7 @@ impl Texture {
         ]
     }
     pub fn load_texture(&mut self,  display: &mut Display<WindowSurface>) {
-        let image = ImageReader::open(self.path.clone()).unwrap().decode().unwrap().crop(self.position[0],self.position[1],self.dimensions[0],self.dimensions[1]).to_rgba8(); //todo!();
+        let image = ImageReader::open(self.path.clone()).unwrap().decode().unwrap().crop(self.position[0],self.position[1],self.dimensions[0],self.dimensions[1]).to_rgba8();
         let image_dimensions = image.dimensions();
         let image = glium::texture::RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
 
@@ -187,6 +187,7 @@ pub struct RenderOptions {
     pub hitboxes: bool,
     pub hurtboxes: bool,
     pub coliders: bool,
+    pub assets: String,
 }
 impl RenderOptions {
     pub fn new() -> Self {
@@ -194,6 +195,7 @@ impl RenderOptions {
             hitboxes: false,
             hurtboxes: false,
             coliders: false,
+            assets: String::from("./assets/"),
         }
     }
 }
@@ -203,8 +205,8 @@ impl GameRanderer {
             map_channel,
             input_channel,
             window,
-            character_sheet: Character::load_all(Some(&mut display)),
-            map_pool: MapInformation::load_all(Some(&mut display)),
+            character_sheet: Character::load_all(Some(&mut display), &options.assets),
+            map_pool: MapInformation::load_all(Some(&mut display), &options.assets),
             display,
             options: options.clone(),
         }

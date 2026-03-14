@@ -24,6 +24,7 @@ enum InputEvents {
     Jump,
     Left,
     Right,
+    Down,
 
     Light,
     Heavy,
@@ -40,6 +41,7 @@ pub struct Client {
     password: String,
 
     addres: String,
+    assets: String,
 
     input: CharacterInput,
     game_pointer: Option<GameRanderer>,
@@ -50,7 +52,7 @@ pub struct Client {
     render: crate::client::renderer::RenderOptions,
 }
 impl Client {
-    pub fn new(password: String, name: String, addres: String, refresh_rate: f32) -> Client {
+    pub fn new(password: String, name: String, addres: String, refresh_rate: f32, assets: String) -> Client {
         let mut input_map = HashMap::new();
         input_map.insert(KeyCode::KeyA,InputEvents::Left);
         input_map.insert(KeyCode::ArrowLeft,InputEvents::Left);
@@ -62,19 +64,27 @@ impl Client {
         input_map.insert(KeyCode::KeyW,InputEvents::Jump);
         input_map.insert(KeyCode::KeyC,InputEvents::Jump);
 
+        input_map.insert(KeyCode::ArrowDown,InputEvents::Down);
+        input_map.insert(KeyCode::KeyS,InputEvents::Down);
+
         input_map.insert(KeyCode::KeyX,InputEvents::Light);
+        input_map.insert(KeyCode::KeyJ,InputEvents::Light);
         input_map.insert(KeyCode::KeyZ,InputEvents::Heavy);
-        input_map.insert(KeyCode::ArrowDown,InputEvents::Special);
+        input_map.insert(KeyCode::KeyK,InputEvents::Heavy);
+        input_map.insert(KeyCode::KeyQ,InputEvents::Special);
 
         input_map.insert(KeyCode::Escape,InputEvents::Quit);
 
         input_map.insert(KeyCode::Backspace,InputEvents::Switch(Option::None));
         input_map.insert(KeyCode::Digit0,InputEvents::Switch(Some(0)));
         input_map.insert(KeyCode::Digit1,InputEvents::Switch(Some(1)));
+        input_map.insert(KeyCode::Digit2,InputEvents::Switch(Some(2)));
+        input_map.insert(KeyCode::Digit3,InputEvents::Switch(Some(3)));
         Client {
             name,
             password,
             addres,
+            assets,
             input: CharacterInput::new(),
             game_pointer: Option::None,
             input_map,
@@ -92,9 +102,12 @@ impl Client {
         let password = String::new();
         let name = String::from("User");
         let addres = String::from("localhost:3621");
-        Self::new(password,name,addres,60.0)
+        let assets = String::from("./assets/");
+        Self::new(password,name,addres,60.0,assets)
     }
     pub fn start(&mut self) {
+        self.render.assets = self.assets.clone();
+
         let (map_trans, map_rec) = mpsc::channel::<Map>();
         let (input_trans, input_rec) = mpsc::channel::<winit::event::WindowEvent>();
         let addres = self.addres.clone();
@@ -150,9 +163,12 @@ impl Client {
                                     (InputEvents::Heavy, pressed) => {input.heavy_attack = ElementState::Pressed == pressed},
                                     (InputEvents::Light, pressed) => {input.light_attack = ElementState::Pressed == pressed},
 
+                                    (InputEvents::Down, pressed) => {input.down = ElementState::Pressed == pressed},
+
                                     (InputEvents::Switch(targ), ElementState::Pressed) => {input_type = InputTypeEvent::CharacterSwitch(*targ)},
-                                    (InputEvents::Quit,_) => {input_type = InputTypeEvent::Quit;}
-                                    _ => {},
+                                    (InputEvents::Switch(_), ElementState::Released) => {},
+
+                                    (InputEvents::Quit,_) => {input_type = InputTypeEvent::Quit;},
                                 }
                             }
                         },

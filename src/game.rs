@@ -54,21 +54,21 @@ impl Game {
         Game {
             password: String::from(""),
             addres: String::from("127.0.0.1:3621"),
-            characters: Character::load_all(Option::None),
+            characters: Character::load_all(Option::None, &String::from("./assets/")),
             players: Arc::new(HashMap::new().into()),
             map: Arc::new(Some(Map::test()).into()),
-            map_pool: MapInformation::load_all(None),
+            map_pool: MapInformation::load_all(None, &String::from("./assets/")),
             refresh_rate: 60.0,
         }
     }
-    pub fn new(password: String,addres: String,refresh_rate: f32,map_id: usize) -> Game {
+    pub fn new(password: String,addres: String,refresh_rate: f32,map_id: usize,assets: String) -> Game {
         Game {
             password,
             addres,
-            characters: Character::load_all(Option::None),
+            characters: Character::load_all(Option::None,&assets),
             players: Arc::new(HashMap::new().into()),
             map: Arc::new(Some(Map::new(map_id)).into()),
-            map_pool: MapInformation::load_all(None),
+            map_pool: MapInformation::load_all(None,&assets),
             refresh_rate,
         }
     }
@@ -200,7 +200,7 @@ impl Game {
     fn get_map_res(map_ref: &Arc<Mutex<Option<Map>>>) -> Response {
         loop { if let Ok(map) = map_ref.try_lock() {
             if let Some(out) = (*map).clone() {
-                break Response::new(ResponseStatus::Ok,BodyType::JSON, &out.to_string());
+                break Response::new(ResponseStatus::Ok,BodyType::Binary, &out.to_string());
             } else {
                 break Response::status(ResponseStatus::Ok);
             }

@@ -1,6 +1,5 @@
 use serde::{Serialize, Deserialize};
 use crate::{
-    base::vector2::Vector2,
     client::renderer::*,
     base::sircle::*,
 };
@@ -32,32 +31,41 @@ pub struct ColisionSircle {
 #[derive(Serialize, Deserialize, Clone)]
 pub struct HitSircle {
     pub colision_shape: Sircle,
-    impact_events: Vec<FrameEvent>
+    pub impact_events: Vec<FrameEvent>
 }
+type Vector2 = [f32;2];
 #[derive(Serialize, Deserialize, Clone)]
 pub enum FrameEvent{
 
+    // todo!("přidat možnosti jestli je přidávání velocity 'damage'"),
     SetVelocity(Vector2),
     AddVelocity(Vector2),
 
     SetVelocityFromPoint(Vector2,f32),
     AddVelocityFromPoint(Vector2,f32),
 
-    MoveTo(Vector2),
+    MoveBy(Vector2),
     DealDamage(f32),
-    ApplyHitStun(f32),
-    ChangeColisionState(ColisionState,u32),
+    ApplyHitStun(u32),
+
+    ChangeColisionState(ColisionState),
+    ChangeActionState(State),
 }
 #[derive(Serialize, Deserialize, Clone)]
 pub struct AnimationFrame {
+    #[serde(default)]
     pub hurt_sircles: Vec<ColisionSircle>,
+    #[serde(default)]
     pub hit_sircles: Vec<HitSircle>,
+    #[serde(default)]
     pub events: Vec<FrameEvent>,
     pub texture: Texture,
     pub hold: u8,
 }
 #[derive(Serialize, Deserialize, Clone,PartialEq)]
 pub enum AnimationState {
+    Damadged,
+
     Idling,
     Running,
 
@@ -73,6 +81,7 @@ pub enum AnimationState {
 impl AnimationState {
     pub fn to_str(&self) -> &str {
         match self {
+            AnimationState::Damadged => "Hurt",
             AnimationState::Idling => "Idling",
             AnimationState::Running => "Running",
             AnimationState::Rizing => "Rizing",
@@ -85,6 +94,7 @@ impl AnimationState {
     }
     pub fn looping(&self) -> bool {
         match self {
+            AnimationState::Damadged => {true},
             AnimationState::Idling => {true},
             AnimationState::Running => {true},
             AnimationState::Rizing => {true},
@@ -98,12 +108,22 @@ impl AnimationState {
 }
 #[derive(Debug,Serialize, Deserialize, Clone)]
 pub enum Direction {
-    Left = -1,
-    Right = 1,
+    Left,
+    Right,
 }
-#[derive(Serialize, Deserialize, Clone)]
+impl Direction {
+    pub fn to_float(&self) -> f32 {
+        match self {
+            Direction::Left => {-1.0},
+            Direction::Right => {1.0},
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub enum State {
     Actionable,
     Acting,
-    HitStun(u32),
+    // frames_left, (user, frame_hit)
+    HitStun(u32,(u32,usize)),
 }

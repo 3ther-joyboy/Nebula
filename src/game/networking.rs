@@ -181,6 +181,7 @@ pub struct CharacterInput {
     pub heavy_attack: bool,
     pub special: bool,
     pub jump: bool,
+    pub down: bool,
 }
 impl CharacterInput {
     pub fn to_string(&self) -> String {
@@ -193,6 +194,7 @@ impl CharacterInput {
             heavy_attack: false,
             special: false,
             jump: false,
+            down: false,
         }
     } 
     pub fn reset(&mut self) {
