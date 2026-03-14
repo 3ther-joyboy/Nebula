@@ -1,5 +1,6 @@
 /target
 assets/characters/*.kra
+assets/characters/*~
 Cargo.lock
 Cargo.lock
 Cargo.lock
