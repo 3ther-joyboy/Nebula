@@ -78,14 +78,34 @@ on_success = "back" # so that we don't open the browser at each change
 
 # You can run your application and have the result displayed in bacon,
 # if it makes sense for this crate.
+[jobs.run_show]
+command = [
+    "cargo", "run", "--",
+	"-c \"Tomáš\"",
+    # put launch parameters for your program behind a `--` separator
+]
+background = false
+[jobs.client]
+command = [
+    "cargo", "run", "--",
+	"-c \"Kuba\"",
+	"-n",
+	"--hitboxes",
+	"--hurtboxes",
+    # put launch parameters for your program behind a `--` separator
+]
+background = false
 [jobs.run]
 command = [
-    "cargo", "run", "--", "-c \"Franta\""
+    "cargo", "run", "--",
+	"-c \"Franta\"",
+	"--hitboxes",
+	"--hurtboxes",
     # put launch parameters for your program behind a `--` separator
 ]
 need_stdout = true
 allow_warnings = true
-background = true
+background = false
 
 # Run your long-running application (eg server) and have the result displayed in bacon.
 # For programs that never stop (eg a server), `background` is set to false
@@ -124,4 +144,5 @@ allow_warnings = true
 [keybindings]
 # alt-m = "job:my-job"
 c = "job:clippy-all" # comment this to have 'c' run clippy on only the default target
-p = "job:pedantic" 
+e = "job:client" 
+w = "job:run_show" 

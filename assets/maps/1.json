@@ -1,5 +1,4 @@
 {
-	"render_colission_boxes": true,
 	"background": {
 		"path": "./assets/maps/test_map/brawhala.png",
 		"dimensions":[728,409],
