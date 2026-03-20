@@ -1,4 +1,3 @@
-use crate::game::physic::FrameEvent::SetVelocity;
 use std::{
     collections::HashMap,
     fs::{
@@ -405,10 +404,10 @@ impl CharacterInstance {
     }
     fn apply_frame_event(&mut self,event: &FrameEvent, source: &Self) {
         match event {
-            FrameEvent::SetVelocityFromPoint(vec,force) => {
+            FrameEvent::SetVelocityFromPoint(_vec,_force) => {
                 todo!();
             },
-            FrameEvent::AddVelocityFromPoint(vec,force) => {
+            FrameEvent::AddVelocityFromPoint(_vec,_force) => {
                 todo!();
             },
             FrameEvent::SetVelocity(vec) => {

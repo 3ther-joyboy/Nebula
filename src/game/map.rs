@@ -127,11 +127,11 @@ pub struct Map {
     pub map_id: usize,
 }
 impl Map {
-    pub fn from_bytes(stream: &[u8]) -> Option<Self> {
+    pub fn from_bytes(_stream: &[u8]) -> Option<Self> {
         todo!();
     }
     pub fn as_bytes(&self) -> Vec<u8> {
-        let mut out: Vec<u8> = Vec::new();
+        let mut _out: Vec<u8> = Vec::new();
         todo!();
     }
     pub fn new_istance(&mut self, character: u32) -> u32 {

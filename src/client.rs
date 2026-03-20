@@ -79,6 +79,7 @@ impl Client {
         input_map.insert(KeyCode::Digit0,InputEvents::Switch(Some(0)));
         input_map.insert(KeyCode::Digit1,InputEvents::Switch(Some(1)));
         input_map.insert(KeyCode::Digit2,InputEvents::Switch(Some(2)));
+
         input_map.insert(KeyCode::Digit3,InputEvents::Switch(Some(3)));
         Client {
             name,

@@ -4,7 +4,6 @@ pub mod networking;
 pub mod physic;
 
 use std::sync::{Arc, Mutex};
-use std::time::Duration;
 
 use std::collections::HashMap;
 use std::thread;
@@ -21,8 +20,10 @@ use std::{
 
 #[derive(Clone)]
 pub struct Player {
+    #[allow(unused)]
     id: String,
     last_ping: usize,
+    #[allow(unused)]
     name: String,
     instance: Option<u32>,   
     pub input: CharacterInput,
