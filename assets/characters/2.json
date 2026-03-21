@@ -1,11 +1,11 @@
 {
     "id": 2,
     "name": "Ken",
-    "weight": 1,
-    "air_jump_count": 1,
-	"jump": 0.05,
-    "aceleration": 0.5,
-    "max_speed": 0.07,
+    "weight": 1.5,
+    "air_jump_count": 2,
+	"jump": 0.04,
+    "aceleration": 1,
+    "max_speed": 0.06,
     "colider": {
         "radius": 0.07,
         "position": [0,0.07]
@@ -35,9 +35,9 @@
                 "texture": {
                     "path": "./assets/characters/ken.png",
 					"scale": 2,
-					"offset":[-29,0],
-					"position":[4,230],
-					"dimensions":[58,87]
+					"offset":[-26,-5],
+					"position":[0,16],
+					"dimensions":[50,87]
                 },
 				"hold": 5
             },
@@ -58,12 +58,13 @@
                         "state": "Vulnerable"
                     }
                 ],
+                "events": [ ],
                 "texture": {
                     "path": "./assets/characters/ken.png",
 					"scale": 2,
-					"offset":[-28,-1],
-					"position":[57,230],
-					"dimensions":[54,87]
+					"offset":[-26,-5],
+					"position":[50,16],
+					"dimensions":[50,87]
                 },
 				"hold": 5
             },
@@ -84,14 +85,15 @@
                         "state": "Vulnerable"
                     }
                 ],
+                "events": [ ],
                 "texture": {
                     "path": "./assets/characters/ken.png",
 					"scale": 2,
-					"offset":[-25,-1],
-					"position":[108,230],
-					"dimensions":[53,87]
+					"offset":[-26,-5],
+					"position":[100,16],
+					"dimensions":[50,87]
                 },
-				"hold": 8
+				"hold": 5
             },
             {
                 "hurt_sircles": [
@@ -110,12 +112,13 @@
                         "state": "Vulnerable"
                     }
                 ],
+                "events": [ ],
                 "texture": {
                     "path": "./assets/characters/ken.png",
 					"scale": 2,
-					"offset":[-28,-1],
-					"position":[57,230],
-					"dimensions":[54,87]
+					"offset":[-26,-5],
+					"position":[150,16],
+					"dimensions":[50,87]
                 },
 				"hold": 5
             }
@@ -142,68 +145,16 @@
 					{"ChangeActionState":"Actionable"}
 				],
                 "texture": {
-                    "path": "./assets/characters/Lee.png",
+                    "path": "./assets/characters/ken.png",
 					"scale": 2,
-					"offset":[-26,0],
-					"position":[6,20],
-					"dimensions":[52,81]
+					"offset":[-26,-5],
+					"position":[200,16],
+					"dimensions":[50,87]
                 },
-				"hold": 5
+				"hold": 2
             },
             {
-				"hurt_sircles": [
-					{
-                        "colision_shape": {
-                            "radius": 0.2,
-                            "position":[0,0.5]
-                        },
-                        "state": "Vulnerable"
-                    },
-                    {
-                        "colision_shape": {
-                            "radius": 0.2,
-                            "position":[0,0.2]
-                        },
-                        "state": "Vulnerable"
-                    }
-                ],
-                "texture": {
-                    "path": "./assets/characters/Lee.png",
-					"scale": 2,
-					"offset":[-29,0],
-					"position":[56,20],
-					"dimensions":[52,81]
-                },
-				"hold": 5
-            },
-            {
-				"hurt_sircles": [
-					{
-                        "colision_shape": {
-                            "radius": 0.2,
-                            "position":[0,0.5]
-                        },
-                        "state": "Vulnerable"
-                    },
-                    {
-                        "colision_shape": {
-                            "radius": 0.2,
-                            "position":[0,0.2]
-                        },
-                        "state": "Vulnerable"
-                    }
-                ],
-                "texture": {
-                    "path": "./assets/characters/Lee.png",
-					"scale": 2,
-					"offset":[-27,0],
-					"position":[110,20],
-					"dimensions":[52,81]
-                },
-				"hold": 5
-            },
-            {
-				"hurt_sircles": [
+                "hurt_sircles": [
                     {
                         "colision_shape": {
                             "radius": 0.2,
@@ -219,17 +170,99 @@
                         "state": "Vulnerable"
                     }
                 ],
+                "events": [ ],
                 "texture": {
-                    "path": "./assets/characters/Lee.png",
+                    "path": "./assets/characters/ken.png",
 					"scale": 2,
-					"offset":[-29,0],
-					"position":[56,20],
-					"dimensions":[52,81]
+					"offset":[-26,-5],
+					"position":[250,16],
+					"dimensions":[50,87]
                 },
-				"hold": 5
+				"hold": 2
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.2]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "events": [ ],
+                "texture": {
+                    "path": "./assets/characters/ken.png",
+					"scale": 2,
+					"offset":[-26,-5],
+					"position":[300,16],
+					"dimensions":[50,87]
+                },
+				"hold": 3
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.2]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "events": [ ],
+                "texture": {
+                    "path": "./assets/characters/ken.png",
+					"scale": 2,
+					"offset":[-26,-5],
+					"position":[350,16],
+					"dimensions":[50,87]
+                },
+				"hold": 4
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.2]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "events": [ ],
+                "texture": {
+                    "path": "./assets/characters/ken.png",
+					"scale": 2,
+					"offset":[-26,-5],
+					"position":[400,16],
+					"dimensions":[50,87]
+                },
+				"hold": 3
             }
 		],
-        "rizing": [
+        "falling": [
             {
 				"hurt_sircles": [
                     {
@@ -244,16 +277,16 @@
 					{"ChangeActionState":"Actionable"}
 				],
                 "texture": {
-                    "path": "./assets/characters/Lee.png",
+                    "path": "./assets/characters/ken.png",
 					"scale": 2,
-					"offset":[-16,8],
-					"position":[312,230],
-					"dimensions":[32,88]
+					"offset":[-26,-5],
+					"position":[1055,515],
+					"dimensions":[50,100]
                 },
-				"hold": 5
+				"hold": 10
             }
 		],
-        "falling": [
+        "rizing": [
             {
 				"hurt_sircles": [
                     {
@@ -275,131 +308,13 @@
 					{"ChangeActionState":"Actionable"}
 				],
                 "texture": {
-                    "path": "./assets/characters/Lee.png",
+                    "path": "./assets/characters/ken.png",
 					"scale": 2,
-					"offset":[-16,0],
-					"position":[348,230],
-					"dimensions":[32,88]
+					"offset":[-26,20],
+					"position":[100,530],
+					"dimensions":[40,78]
                 },
 				"hold": 5
-            }
-		],
-        "heavy_attack": [
-            {
-                "hurt_sircles": [
-                    {
-                        "colision_shape": {
-                            "radius": 0.2,
-                            "position":[0,0.25]
-                        },
-                        "state": "Vulnerable"
-                    }
-                ],
-                "events": [
-					{"ChangeActionState":"Acting"}
-				],
-                "texture": {
-                    "path": "./assets/characters/Lee.png",
-					"scale": 2,
-					"offset":[-26,0],
-					"position":[2,340],
-					"dimensions":[50,76]
-                },
-				"hold": 5
-            },
-            {
-                "hurt_sircles": [
-                    {
-                        "colision_shape": {
-                            "radius": 0.2,
-                            "position":[0,0.25]
-                        },
-                        "state": "Vulnerable"
-                    },
-                    {
-                        "colision_shape": {
-                            "radius": 0.15,
-                            "position":[0.3,0.15]
-                        },
-                        "state": "Vulnerable"
-                    }
-                ],
-                "texture": {
-                    "path": "./assets/characters/Lee.png",
-					"scale": 2,
-					"offset":[-26,0],
-					"position":[326,340],
-					"dimensions":[64,76]
-                },
-				"hold": 4
-            },
-            {
-                "hurt_sircles": [
-                    {
-                        "colision_shape": {
-                            "radius": 0.2,
-                            "position":[0,0.25]
-                        },
-                        "state": "Vulnerable"
-                    },
-                    {
-                        "colision_shape": {
-                            "radius": 0.15,
-                            "position":[0.3,0.15]
-                        },
-                        "state": "Vulnerable"
-                    }
-                ],
-				"hit_sircles": [
-					{
-						"colision_shape": {
-							"radius": 0.15,
-							"position":[0.4,0.4]
-						},
-						"impact_events": [
-							{"DealDamage":0.1},
-							{"ApplyHitStun":10},
-							{"AddVelocity":[0.5,0.25]}
-						]
-					}
-				],
-                "events": [
-					{"SetVelocity":[0.05,0]}
-				],
-                "texture": {
-                    "path": "./assets/characters/Lee.png",
-					"scale": 2,
-					"offset":[-26,0],
-					"position":[386,340],
-					"dimensions":[94,76]
-                },
-				"hold": 8
-            },
-            {
-                "hurt_sircles": [
-                    {
-                        "colision_shape": {
-                            "radius": 0.2,
-                            "position":[0,0.25]
-                        },
-                        "state": "Vulnerable"
-                    },
-                    {
-                        "colision_shape": {
-                            "radius": 0.1,
-                            "position":[0.3,0.1]
-                        },
-                        "state": "Vulnerable"
-                    }
-                ],
-                "texture": {
-                    "path": "./assets/characters/Lee.png",
-					"scale": 2,
-					"offset":[-26,0],
-					"position":[114,340],
-					"dimensions":[64,76]
-                },
-				"hold": 6
             }
 		],
         "light_attack": [
@@ -420,17 +335,18 @@
                         "state": "Vulnerable"
                     }
                 ],
+                "hit_sircles": [],
                 "events": [
 					{"ChangeActionState":"Acting"}
 				],
                 "texture": {
-                    "path": "./assets/characters/Lee.png",
+                    "path": "./assets/characters/ken.png",
 					"scale": 2,
-					"offset":[-24,1],
-					"position":[4,438],
-					"dimensions":[54,88]
+					"offset":[-26,-5],
+					"position":[5,420],
+					"dimensions":[55,60]
                 },
-				"hold": 1
+				"hold": 4
             },
             {
                 "hurt_sircles": [
@@ -444,68 +360,40 @@
                     {
                         "colision_shape": {
                             "radius": 0.15,
-                            "position":[0.05,0.55]
+                            "position":[0.0,0.55]
                         },
                         "state": "Vulnerable"
                     }
                 ],
+                "hit_sircles": [],
+                "events": [ ],
                 "texture": {
-                    "path": "./assets/characters/Lee.png",
+                    "path": "./assets/characters/ken.png",
 					"scale": 2,
-					"offset":[-29,1],
-					"position":[64,438],
-					"dimensions":[62,88]
+					"offset":[-25,-5],
+					"position":[1050,420],
+					"dimensions":[50,60]
                 },
-				"hold": 3
+				"hold": 2
             },
             {
                 "hurt_sircles": [
                     {
                         "colision_shape": {
-                            "radius": 0.15,
-                            "position":[0.1,0.2]
-                        },
-                        "state": "Vulnerable"
-                    },
-                    {
-                        "colision_shape": {
-                            "radius": 0.15,
-                            "position":[0.1,0.55]
+                            "radius": 0.2,
+                            "position":[0,0.2]
                         },
                         "state": "Vulnerable"
                     }
                 ],
-                "hit_sircles": [
-					{
-						"colision_shape": {
-							"radius": 0.1,
-							"position":[0.45,0.45]
-						},
-						"impact_events": [
-							{"DealDamage":0.05},
-							{"ApplyHitStun":5},
-							{"AddVelocity":[0.3,0.0]}
-						]
-					},
-					{
-						"colision_shape": {
-							"radius": 0.1,
-							"position":[0.25,0.4]
-						},
-						"impact_events": [
-							{"DealDamage":0.05},
-							{"ApplyHitStun":5},
-							{"AddVelocity":[0.3,0.0]}
-						]
-					}
-				],
-                "events": [],
+                "hit_sircles": [],
+                "events": [ ],
                 "texture": {
-                    "path": "./assets/characters/Lee.png",
+                    "path": "./assets/characters/ken.png",
 					"scale": 2,
-					"offset":[-21,1],
-					"position":[126,438],
-					"dimensions":[86,88]
+					"offset":[-25,-5],
+					"position":[1100,420],
+					"dimensions":[80,60]
                 },
 				"hold": 5
             },
@@ -527,15 +415,177 @@
                     }
                 ],
                 "hit_sircles": [],
+                "events": [ ],
+                "texture": {
+                    "path": "./assets/characters/ken.png",
+					"scale": 2,
+					"offset":[-25,-5],
+					"position":[1050,420],
+					"dimensions":[50,60]
+                },
+				"hold": 4
+            }
+		],
+        "heavy_attack": [
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.25]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.1,
+                            "position":[0.3,0.1]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
                 "events": [
-					{"ChangeActionState":"Actionable"}
+					{"ChangeActionState":"Acting"}
 				],
                 "texture": {
-                    "path": "./assets/characters/Lee.png",
+                    "path": "./assets/characters/ken.png",
 					"scale": 2,
-					"offset":[-24,1],
-					"position":[4,438],
-					"dimensions":[54,88]
+					"offset":[-25,-5],
+					"position":[330, 680],
+					"dimensions":[50,70]
+                },
+				"hold": 4
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.25]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.1,
+                            "position":[0.3,0.1]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "texture": {
+                    "path": "./assets/characters/ken.png",
+					"scale": 2,
+					"offset":[-25,-5],
+					"position":[380, 670],
+					"dimensions":[50,80]
+                },
+				"hold": 3
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.25]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.1,
+                            "position":[0.3,0.1]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+				"events": [
+					{"SetVelocity":[0.05,0.05]}
+				],
+                "texture": {
+                    "path": "./assets/characters/ken.png",
+					"scale": 2,
+					"offset":[-25,-5],
+					"position":[430, 640],
+					"dimensions":[55,110]
+                },
+				"hold": 2
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.25]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.1,
+                            "position":[0.3,0.1]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "texture": {
+                    "path": "./assets/characters/ken.png",
+					"scale": 2,
+					"offset":[-25,-5],
+					"position":[485, 630],
+					"dimensions":[55,120]
+                },
+				"hold": 4
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.25]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.1,
+                            "position":[0.3,0.1]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "texture": {
+                    "path": "./assets/characters/ken.png",
+					"scale": 2,
+					"offset":[-25,-5],
+					"position":[540, 630],
+					"dimensions":[40,120]
+                },
+				"hold": 3
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.25]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.1,
+                            "position":[0.3,0.1]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "texture": {
+                    "path": "./assets/characters/ken.png",
+					"scale": 2,
+					"offset":[-25,-5],
+					"position":[580, 630],
+					"dimensions":[40,120]
                 },
 				"hold": 4
             }
@@ -557,108 +607,16 @@
                         },
                         "state": "Vulnerable"
                     }
-                ],
-                "events": [
-					{"ChangeActionState":"Acting"}
 				],
+                "events": [{"ChangeActionState":"Acting"}],
                 "texture": {
-                    "path": "./assets/characters/Lee.png",
+                    "path": "./assets/characters/ken.png",
 					"scale": 2,
-					"position":[564,550],
-					"offset":[-23,0],
-					"dimensions":[46,96]
+					"position":[1110,500],
+					"offset":[-23,-5],
+					"dimensions":[40,100]
                 },
-				"hold": 4
-            },
-            {
-				"hurt_sircles": [
-                    {
-                        "colision_shape": {
-                            "radius": 0.15,
-                            "position":[-0.075,0.55]
-                        },
-                        "state": "Vulnerable"
-                    },
-                    {
-                        "colision_shape": {
-                            "radius": 0.15,
-                            "position":[0,0.2]
-                        },
-                        "state": "Vulnerable"
-                    }
-                ],
-                "hit_sircles": [
-					{
-						"colision_shape": {
-							"radius": 0.1,
-							"position":[0.2,0.45]
-						},
-						"impact_events": [
-							{"DealDamage":0.05},
-							{"ApplyHitStun":4},
-							{"AddVelocity":[0.2,0.0]}
-						]
-					},
-					{
-						"colision_shape": {
-							"radius": 0.1,
-							"position":[0.2,0.6]
-						},
-						"impact_events": [
-							{"DealDamage":0.05},
-							{"ApplyHitStun":4},
-							{"AddVelocity":[0.2,0.0]}
-						]
-					},
-					{
-						"colision_shape": {
-							"radius": 0.15,
-							"position":[0.15,0.75]
-						},
-						"impact_events": [
-							{"DealDamage":0.075},
-							{"ApplyHitStun":8},
-							{"AddVelocity":[0.05,0.25]}
-						]
-					}
-				],
-                "events": [
-					{"SetVelocity":[0,0.05]}
-				],
-                "texture": {
-                    "path": "./assets/characters/Lee.png",
-					"scale": 2,
-					"position":[610,550],
-					"offset":[-20,0],
-					"dimensions":[40,96]
-                },
-				"hold": 2
-            },
-            {
-				"hurt_sircles": [
-                    {
-                        "colision_shape": {
-                            "radius": 0.2,
-                            "position":[0,0.55]
-                        },
-                        "state": "Vulnerable"
-                    },
-                    {
-                        "colision_shape": {
-                            "radius": 0.15,
-                            "position":[0,0.2]
-                        },
-                        "state": "Vulnerable"
-                    }
-                ],
-                "texture": {
-                    "path": "./assets/characters/Lee.png",
-					"scale": 2,
-					"position":[610,550],
-					"offset":[-20,0],
-					"dimensions":[40,96]
-                },
-				"hold": 4
+				"hold": 10
             },
             {
 				"hurt_sircles": [
@@ -678,13 +636,91 @@
                     }
 				],
                 "texture": {
-                    "path": "./assets/characters/Lee.png",
+                    "path": "./assets/characters/ken.png",
 					"scale": 2,
-					"position":[564,550],
-					"offset":[-23,0],
-					"dimensions":[46,96]
+					"position":[1150,500],
+					"offset":[-23,-5],
+					"dimensions":[70,100]
                 },
-				"hold": 6
+				"hold": 3
+            },
+            {
+				"hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.55]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0,0.2]
+                        },
+                        "state": "Vulnerable"
+                    }
+				],
+                "texture": {
+                    "path": "./assets/characters/ken.png",
+					"scale": 2,
+					"position":[1220,500],
+					"offset":[-23,-5],
+					"dimensions":[40,100]
+                },
+				"hold": 3
+            },
+            {
+				"hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.55]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0,0.2]
+                        },
+                        "state": "Vulnerable"
+                    }
+				],
+                "texture": {
+                    "path": "./assets/characters/ken.png",
+					"scale": 2,
+					"position":[1265,500],
+					"offset":[-40,-5],
+					"dimensions":[60,100]
+                },
+				"hold": 3
+            },
+            {
+				"hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.55]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0,0.2]
+                        },
+                        "state": "Vulnerable"
+                    }
+				],
+                "texture": {
+                    "path": "./assets/characters/ken.png",
+					"scale": 2,
+					"position":[1330,500],
+					"offset":[-40,-5],
+					"dimensions":[60,100]
+                },
+				"hold": 5
             }
 		],
         "air_born_light_attack": [
@@ -697,16 +733,15 @@
                         },
                         "state": "Vulnerable"
                     }
+					
                 ],
-                "events": [
-					{"ChangeActionState":"Acting"}
-				],
+                "events": [{"ChangeActionState":"Acting"}],
                 "texture": {
-                    "path": "./assets/characters/Lee.png",
+                    "path": "./assets/characters/ken.png",
 					"scale": 2,
-					"position":[490,670],
+					"position":[460,540],
 					"offset":[-16,8],
-					"dimensions":[38,80]
+					"dimensions":[40,75]
                 },
 				"hold": 4
             },
@@ -720,70 +755,14 @@
                         "state": "Vulnerable"
                     }
                 ],
-                "hit_sircles": [
-					{
-						"colision_shape": {
-							"radius": 0.1,
-							"position":[0.25,0.6]
-						},
-						"impact_events": [
-							{"DealDamage":0.01},
-							{"ApplyHitStun":5},
-							{"AddVelocity":[0.05,-0.05]}
-						]
-					}
-				],
                 "texture": {
-                    "path": "./assets/characters/Lee.png",
+                    "path": "./assets/characters/ken.png",
 					"scale": 2,
-					"position":[528,670],
+					"position":[500,540],
 					"offset":[-16,8],
-					"dimensions":[50,80]
+					"dimensions":[70,75]
                 },
-				"hold": 2
-            },
-            {
-				"hurt_sircles": [
-                    {
-                        "colision_shape": {
-                            "radius": 0.2,
-                            "position":[-0.075,0.45]
-                        },
-                        "state": "Vulnerable"
-                    }
-                ],
-                "hit_sircles": [
-					{
-						"colision_shape": {
-							"radius": 0.15,
-							"position":[0.3,0.4]
-						},
-						"impact_events": [
-							{"DealDamage":0.02},
-							{"ApplyHitStun":5},
-							{"AddVelocity":[0.0,-0.1]}
-						]
-					},
-					{
-						"colision_shape": {
-							"radius": 0.2,
-							"position":[0.25,0.25]
-						},
-						"impact_events": [
-							{"DealDamage":0.02},
-							{"ApplyHitStun":5},
-							{"AddVelocity":[0.0,-0.15]}
-						]
-					}
-				],
-                "texture": {
-                    "path": "./assets/characters/Lee.png",
-					"scale": 2,
-					"position":[580,670],
-					"offset":[-16,8],
-					"dimensions":[50,80]
-                },
-				"hold": 2
+				"hold": 8
             },
             {
 				"hurt_sircles": [
@@ -796,14 +775,14 @@
                     }
                 ],
                 "texture": {
-                    "path": "./assets/characters/Lee.png",
+                    "path": "./assets/characters/ken.png",
 					"scale": 2,
-					"position":[580,670],
+					"position":[568,540],
 					"offset":[-16,8],
-					"dimensions":[50,80]
+					"dimensions":[50,75]
                 },
-				"hold": 4
-            }
+				"hold": 3
+			}
 		],
 		"hurt":[
 			{
@@ -816,13 +795,13 @@
                         "state": "Vulnerable"
                     }
                 ],
-                "events": [],
+                "events": [ ],
                 "texture": {
-                    "path": "./assets/characters/Lee.png",
+                    "path": "./assets/characters/ken.png",
 					"scale": 2,
-					"offset":[-16,8],
-					"position":[312,230],
-					"dimensions":[32,88]
+					"offset":[-30,10],
+					"position":[500,790],
+					"dimensions":[60,60]
                 },
 				"hold": 5
             }
