@@ -1,0 +1,537 @@
+{
+    "id": 3,
+    "name": "Cammy",
+    "weight": 0.5,
+    "air_jump_count": 2,
+	"jump": 0.06,
+    "aceleration": 0.7,
+    "max_speed": 0.07,
+    "colider": {
+        "radius": 0.08,
+        "position": [0,0.08]
+    },
+    "animations": {
+        "idling": [
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "events": [
+					{"ChangeActionState":"Actionable"}
+				],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-24,-5],
+					"position":[5,24],
+					"dimensions":[48,90]
+                },
+				"hold": 5
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "events": [],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-24,-5],
+					"position":[59,24],
+					"dimensions":[48,90]
+                },
+				"hold": 5
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "events": [],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-24,-5],
+					"position":[111,24],
+					"dimensions":[48,90]
+                },
+				"hold": 5
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "events": [],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-24,-5],
+					"position":[164,24],
+					"dimensions":[48,90]
+                },
+				"hold": 5
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "events": [],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-24,-5],
+					"position":[217,24],
+					"dimensions":[48,90]
+                },
+				"hold": 5
+            }
+        ],
+        "running": [
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "events": [
+					{"ChangeActionState":"Actionable"}
+				],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-24,-5],
+					"position":[274,24],
+					"dimensions":[48,90]
+                },
+				"hold": 5
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "events": [],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-28,-5],
+					"position":[317,24],
+					"dimensions":[48,90]
+                },
+				"hold": 5
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "events": [],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-24,-5],
+					"position":[371,24],
+					"dimensions":[48,90]
+                },
+				"hold": 5
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "events": [],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-31,-5],
+					"position":[417,24],
+					"dimensions":[48,90]
+                },
+				"hold": 5
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "events": [],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-28,-5],
+					"position":[468,24],
+					"dimensions":[48,90]
+                },
+				"hold": 5
+            }
+        ],
+        "falling": [
+            {
+				"hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.25,
+                            "position":[0,0.45]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "events": [
+					{"ChangeActionState":"Actionable"}
+				],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-18,10],
+					"position":[780,12],
+					"dimensions":[36,80]
+                },
+				"hold": 10
+            }
+		],
+        "rizing": [
+            {
+				"hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.2]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "events": [
+					{"ChangeActionState":"Actionable"}
+				],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-18,10],
+					"position":[708,12],
+					"dimensions":[36,80]
+                },
+				"hold": 5
+            }
+		],
+        "light_attack": [
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.2]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0.0,0.55]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "hit_sircles": [],
+                "events": [
+					{"ChangeActionState":"Acting"}
+				],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-32,-5],
+					"position":[433,140],
+					"dimensions":[70,80]
+                },
+				"hold": 3
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.2]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0.0,0.55]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "hit_sircles": [],
+                "events": [ ],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-32,-5],
+					"position":[504,140],
+					"dimensions":[80,80]
+                },
+				"hold": 5
+            },
+            {
+                "hurt_sircles": [ ],
+                "hit_sircles": [],
+                "events": [ {"ChangeActionState":"Acting"} ],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-32,-5],
+					"position":[433,140],
+					"dimensions":[70,80]
+                },
+				"hold": 3
+            }
+		],
+        "heavy_attack": [
+            {
+                "hurt_sircles": [ ],
+                "hit_sircles": [],
+                "events": [ {"ChangeActionState":"Acting"} ],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-32,-5],
+					"position":[2,680],
+					"dimensions":[58,70]
+                },
+				"hold": 4
+            },
+            {
+                "hurt_sircles": [ ],
+                "hit_sircles": [],
+                "events": [  ],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-32,-5],
+					"position":[60,670],
+					"dimensions":[58,80]
+                },
+				"hold": 4
+            },
+            {
+                "hurt_sircles": [ ],
+                "hit_sircles": [],
+                "events": [  ],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-32,-5],
+					"position":[122,660],
+					"dimensions":[64,88]
+                },
+				"hold": 3
+            },
+            {
+                "hurt_sircles": [ ],
+                "hit_sircles": [],
+                "events": [
+					{"SetVelocity":[0.02,0.06]}
+				],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-31,-5],
+					"position":[179,648],
+					"dimensions":[62,100]
+                },
+				"hold": 4
+            },
+            {
+                "hurt_sircles": [ ],
+                "hit_sircles": [],
+                "events": [ ],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-31,-5],
+					"position":[225,670],
+					"dimensions":[70,70]
+                },
+				"hold": 4
+            },
+            {
+                "hurt_sircles": [ ],
+                "hit_sircles": [],
+                "events": [ ],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-31,-5],
+					"position":[302,670],
+					"dimensions":[70,70]
+                },
+				"hold": 3
+            }
+		],
+        "air_born_heavy_attack": [
+            {
+                "hurt_sircles": [ ],
+                "hit_sircles": [],
+                "events": [ {"ChangeActionState":"Acting"} ],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-31,-5],
+					"position":[104,550],
+					"dimensions":[60,70]
+                },
+				"hold": 8
+            },
+            {
+                "hurt_sircles": [ ],
+                "hit_sircles": [],
+                "events": [ {"ChangeActionState":"Acting"} ],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-31,-5],
+					"position":[168,560],
+					"dimensions":[104,40]
+                },
+				"hold": 4
+            },
+            {
+                "hurt_sircles": [ ],
+                "hit_sircles": [],
+                "events": [ {"ChangeActionState":"Acting"} ],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-31,-5],
+					"position":[270,560],
+					"dimensions":[102,40]
+                },
+				"hold": 4
+            },
+            {
+                "hurt_sircles": [ ],
+                "hit_sircles": [],
+                "events": [ {"ChangeActionState":"Acting"} ],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-31,-15],
+					"position":[372,560],
+					"dimensions":[102,50]
+                },
+				"hold": 4
+            },
+            {
+                "hurt_sircles": [ ],
+                "hit_sircles": [],
+                "events": [ {"ChangeActionState":"Acting"} ],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-31,-30],
+					"position":[780,570],
+					"dimensions":[80,60]
+                },
+				"hold": 10
+            }
+		],
+        "air_born_light_attack": [ 
+            {
+                "hurt_sircles": [ ],
+                "hit_sircles": [],
+                "events": [ {"ChangeActionState":"Acting"} ],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-31,-30],
+					"position":[112,354],
+					"dimensions":[40,88]
+                },
+				"hold": 100
+            }
+		],
+		"hurt":[
+			{
+				"hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.25,
+                            "position":[0,0.45]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-25,-10],
+					"position":[2,895],
+					"dimensions":[50,87]
+                },
+				"hold": 5
+            }
+		]
+    }
+
+}
