@@ -117,7 +117,7 @@ impl Texture {
 
         void main() {
             v_tex_coords = tex_coords;
-            gl_Position = vec4(position, 0.0, 1.0);
+            gl_Position = vec4(position, 0, 1);
         }
     "#;
     const FRAGMENT_SHADER_SRC: &str = r#"
@@ -128,12 +128,16 @@ impl Texture {
 
         uniform sampler2D tex;
 
+
         void main() {
             vec4 texColor = texture(tex, v_tex_coords);
-            if(texColor.a < 1.0)
+
+            if(texColor.a == 0.0) {
                 discard;
-            color = vec4(texColor.r,texColor.g,texColor.b,1.0);
+            }
+            color = texColor;
         }
+
     "#;
     pub fn draw(&self ,display: &mut Display<WindowSurface>,frame: &mut glium::Frame) {
         let shape = vec![
@@ -151,7 +155,8 @@ impl Texture {
         };
         let indices = glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList);
         let program_err = glium::Program::from_source(display, Self::VERTEX_SHADER_SRC, Self::FRAGMENT_SHADER_SRC, None);
-        frame.draw(&vertex_buffer, &indices, &program_err.unwrap(), &uniforms, &Default::default()).unwrap();
+
+        frame.draw(&vertex_buffer, &indices, &program_err.unwrap(), &uniforms, &Self::parameters()).unwrap();
     }
     pub fn draw_on(&self ,display: &mut Display<WindowSurface>,frame: &mut glium::Frame,post: [f32;2],dir: &Direction) {
         let (x,y) = display.get_framebuffer_dimensions();
@@ -167,7 +172,12 @@ impl Texture {
 
         let program_err = glium::Program::from_source(display, Self::VERTEX_SHADER_SRC, Self::FRAGMENT_SHADER_SRC, None);
 
-        frame.draw(&vertex_buffer, &indices, &program_err.unwrap(), &uniforms, &Default::default()).unwrap();
+        frame.draw(&vertex_buffer, &indices, &program_err.unwrap(), &uniforms, &Self::parameters()).unwrap();
+    }
+    fn parameters() -> glium::DrawParameters<'static> {
+        let mut draw_parameters: glium::DrawParameters = Default::default();
+        draw_parameters.blend = glium::draw_parameters::Blend::alpha_blending();
+        return draw_parameters;
     }
 }
 
