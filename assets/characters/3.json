@@ -20,6 +20,13 @@
                             "position":[0,0.5]
                         },
                         "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0,0.2]
+                        },
+                        "state": "Vulnerable"
                     }
                 ],
                 "events": [
@@ -42,6 +49,13 @@
                             "position":[0,0.5]
                         },
                         "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0,0.2]
+                        },
+                        "state": "Vulnerable"
                     }
                 ],
                 "events": [],
@@ -60,6 +74,13 @@
                         "colision_shape": {
                             "radius": 0.2,
                             "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0,0.2]
                         },
                         "state": "Vulnerable"
                     }
@@ -82,6 +103,13 @@
                             "position":[0,0.5]
                         },
                         "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0,0.2]
+                        },
+                        "state": "Vulnerable"
                     }
                 ],
                 "events": [],
@@ -100,6 +128,13 @@
                         "colision_shape": {
                             "radius": 0.2,
                             "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0,0.2]
                         },
                         "state": "Vulnerable"
                     }
@@ -124,6 +159,13 @@
                             "position":[0,0.5]
                         },
                         "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0,0.2]
+                        },
+                        "state": "Vulnerable"
                     }
                 ],
                 "events": [
@@ -146,6 +188,13 @@
                             "position":[0,0.5]
                         },
                         "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0,0.2]
+                        },
+                        "state": "Vulnerable"
                     }
                 ],
                 "events": [],
@@ -164,6 +213,13 @@
                         "colision_shape": {
                             "radius": 0.2,
                             "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0,0.2]
                         },
                         "state": "Vulnerable"
                     }
@@ -186,6 +242,13 @@
                             "position":[0,0.5]
                         },
                         "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0,0.2]
+                        },
+                        "state": "Vulnerable"
                     }
                 ],
                 "events": [],
@@ -204,6 +267,13 @@
                         "colision_shape": {
                             "radius": 0.2,
                             "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0,0.2]
                         },
                         "state": "Vulnerable"
                     }
@@ -248,15 +318,8 @@
 				"hurt_sircles": [
                     {
                         "colision_shape": {
-                            "radius": 0.2,
-                            "position":[0,0.5]
-                        },
-                        "state": "Vulnerable"
-                    },
-                    {
-                        "colision_shape": {
-                            "radius": 0.2,
-                            "position":[0,0.2]
+                            "radius": 0.25,
+                            "position":[0,0.45]
                         },
                         "state": "Vulnerable"
                     }
@@ -287,7 +350,7 @@
                     {
                         "colision_shape": {
                             "radius": 0.15,
-                            "position":[0.0,0.55]
+                            "position":[0.1,0.4]
                         },
                         "state": "Vulnerable"
                     }
@@ -317,7 +380,7 @@
                     {
                         "colision_shape": {
                             "radius": 0.15,
-                            "position":[0.0,0.55]
+                            "position":[0.1,0.4]
                         },
                         "state": "Vulnerable"
                     }
@@ -334,7 +397,22 @@
 				"hold": 5
             },
             {
-                "hurt_sircles": [ ],
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.2]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0.1,0.4]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
                 "hit_sircles": [],
                 "events": [ {"ChangeActionState":"Acting"} ],
                 "texture": {
@@ -349,7 +427,22 @@
 		],
         "heavy_attack": [
             {
-                "hurt_sircles": [ ],
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.2]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[-0.1,0.4]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
                 "hit_sircles": [],
                 "events": [ {"ChangeActionState":"Acting"} ],
                 "texture": {
@@ -362,7 +455,22 @@
 				"hold": 4
             },
             {
-                "hurt_sircles": [ ],
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.2]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[-0.1,0.4]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
                 "hit_sircles": [],
                 "events": [  ],
                 "texture": {
@@ -375,7 +483,22 @@
 				"hold": 4
             },
             {
-                "hurt_sircles": [ ],
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.2]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[-0.1,0.4]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
                 "hit_sircles": [],
                 "events": [  ],
                 "texture": {
@@ -388,7 +511,15 @@
 				"hold": 3
             },
             {
-                "hurt_sircles": [ ],
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.25,
+                            "position":[0,0.25]
+                        },
+                        "state": "Vulnerable"
+                    }
+				],
                 "hit_sircles": [],
                 "events": [
 					{"SetVelocity":[0.02,0.06]}
@@ -403,7 +534,15 @@
 				"hold": 4
             },
             {
-                "hurt_sircles": [ ],
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.25,
+                            "position":[0,0.25]
+                        },
+                        "state": "Vulnerable"
+                    }
+				],
                 "hit_sircles": [],
                 "events": [ ],
                 "texture": {
@@ -416,7 +555,15 @@
 				"hold": 4
             },
             {
-                "hurt_sircles": [ ],
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.25,
+                            "position":[0,0.25]
+                        },
+                        "state": "Vulnerable"
+                    }
+				],
                 "hit_sircles": [],
                 "events": [ ],
                 "texture": {
@@ -431,7 +578,22 @@
 		],
         "air_born_heavy_attack": [
             {
-                "hurt_sircles": [ ],
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0.1,0.2]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[-0.1,0.2]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
                 "hit_sircles": [],
                 "events": [ {"ChangeActionState":"Acting"} ],
                 "texture": {
@@ -444,52 +606,112 @@
 				"hold": 8
             },
             {
-                "hurt_sircles": [ ],
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0.1,0.2]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[-0.1,0.2]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
                 "hit_sircles": [],
                 "events": [ {"ChangeActionState":"Acting"} ],
                 "texture": {
                     "path": "./assets/characters/cammy.png",
 					"scale": 2,
-					"offset":[-31,-5],
+					"offset":[-31,10],
 					"position":[168,560],
 					"dimensions":[104,40]
                 },
 				"hold": 4
             },
             {
-                "hurt_sircles": [ ],
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0.1,0.2]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[-0.1,0.2]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
                 "hit_sircles": [],
                 "events": [ {"ChangeActionState":"Acting"} ],
                 "texture": {
                     "path": "./assets/characters/cammy.png",
 					"scale": 2,
-					"offset":[-31,-5],
+					"offset":[-31,10],
 					"position":[270,560],
 					"dimensions":[102,40]
                 },
 				"hold": 4
             },
             {
-                "hurt_sircles": [ ],
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0.1,0.2]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[-0.1,0.2]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
                 "hit_sircles": [],
                 "events": [ {"ChangeActionState":"Acting"} ],
                 "texture": {
                     "path": "./assets/characters/cammy.png",
 					"scale": 2,
-					"offset":[-31,-15],
+					"offset":[-31,10],
 					"position":[372,560],
 					"dimensions":[102,50]
                 },
 				"hold": 4
             },
             {
-                "hurt_sircles": [ ],
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0.1,0.2]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[-0.1,0.2]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
                 "hit_sircles": [],
                 "events": [ {"ChangeActionState":"Acting"} ],
                 "texture": {
                     "path": "./assets/characters/cammy.png",
 					"scale": 2,
-					"offset":[-31,-30],
+					"offset":[-31,-5],
 					"position":[780,570],
 					"dimensions":[80,60]
                 },
@@ -498,17 +720,88 @@
 		],
         "air_born_light_attack": [ 
             {
-                "hurt_sircles": [ ],
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[-0.15,0.15]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[-0.1,0.4]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
                 "hit_sircles": [],
                 "events": [ {"ChangeActionState":"Acting"} ],
                 "texture": {
                     "path": "./assets/characters/cammy.png",
 					"scale": 2,
-					"offset":[-31,-30],
+					"offset":[-31,0],
 					"position":[112,354],
 					"dimensions":[40,88]
                 },
-				"hold": 100
+				"hold": 6
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[-0.15,0.15]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[-0.1,0.4]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "hit_sircles": [],
+                "events": [ ],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-31,0],
+					"position":[158,354],
+					"dimensions":[58,88]
+                },
+				"hold": 3
+            },
+            {
+                "hurt_sircles": [
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[-0.15,0.15]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[-0.1,0.4]
+                        },
+                        "state": "Vulnerable"
+                    }
+                ],
+                "hit_sircles": [],
+                "events": [ ],
+                "texture": {
+                    "path": "./assets/characters/cammy.png",
+					"scale": 2,
+					"offset":[-31,0],
+					"position":[216,354],
+					"dimensions":[54,88]
+                },
+				"hold": 5
             }
 		],
 		"hurt":[

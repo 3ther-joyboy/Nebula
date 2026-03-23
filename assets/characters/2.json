@@ -267,8 +267,15 @@
 				"hurt_sircles": [
                     {
                         "colision_shape": {
-                            "radius": 0.25,
-                            "position":[0,0.45]
+                            "radius": 0.2,
+                            "position":[0,0.5]
+                        },
+                        "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.2,
+                            "position":[0,0.2]
                         },
                         "state": "Vulnerable"
                     }
@@ -291,15 +298,8 @@
 				"hurt_sircles": [
                     {
                         "colision_shape": {
-                            "radius": 0.2,
-                            "position":[0,0.5]
-                        },
-                        "state": "Vulnerable"
-                    },
-                    {
-                        "colision_shape": {
-                            "radius": 0.2,
-                            "position":[0,0.2]
+                            "radius": 0.25,
+                            "position":[0,0.4]
                         },
                         "state": "Vulnerable"
                     }
@@ -330,7 +330,7 @@
                     {
                         "colision_shape": {
                             "radius": 0.15,
-                            "position":[0.0,0.55]
+                            "position":[0.0,0.35]
                         },
                         "state": "Vulnerable"
                     }
@@ -360,7 +360,7 @@
                     {
                         "colision_shape": {
                             "radius": 0.15,
-                            "position":[0.0,0.55]
+                            "position":[0.0,0.35]
                         },
                         "state": "Vulnerable"
                     }
@@ -384,9 +384,25 @@
                             "position":[0,0.2]
                         },
                         "state": "Vulnerable"
+                    },
+                    {
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0.0,0.35]
+                        },
+                        "state": "Vulnerable"
                     }
+
                 ],
-                "hit_sircles": [],
+				"hit_sircles": [
+					{
+						"colision_shape": {
+							"radius": 0.1,
+							"position":[0.35,0.1]
+						},
+						"impact_events": [ ]
+					}
+				],
                 "events": [ ],
                 "texture": {
                     "path": "./assets/characters/ken.png",
@@ -409,7 +425,7 @@
                     {
                         "colision_shape": {
                             "radius": 0.15,
-                            "position":[0.0,0.55]
+                            "position":[0.0,0.35]
                         },
                         "state": "Vulnerable"
                     }
@@ -435,13 +451,6 @@
                             "position":[0,0.25]
                         },
                         "state": "Vulnerable"
-                    },
-                    {
-                        "colision_shape": {
-                            "radius": 0.1,
-                            "position":[0.3,0.1]
-                        },
-                        "state": "Vulnerable"
                     }
                 ],
                 "events": [
@@ -460,15 +469,15 @@
                 "hurt_sircles": [
                     {
                         "colision_shape": {
-                            "radius": 0.2,
-                            "position":[0,0.25]
+                            "radius": 0.15,
+                            "position":[0,0.5]
                         },
                         "state": "Vulnerable"
                     },
                     {
                         "colision_shape": {
-                            "radius": 0.1,
-                            "position":[0.3,0.1]
+                            "radius": 0.2,
+                            "position":[0,0.2]
                         },
                         "state": "Vulnerable"
                     }
@@ -486,15 +495,15 @@
                 "hurt_sircles": [
                     {
                         "colision_shape": {
-                            "radius": 0.2,
-                            "position":[0,0.25]
+                            "radius": 0.15,
+                            "position":[0,0.5]
                         },
                         "state": "Vulnerable"
                     },
                     {
                         "colision_shape": {
-                            "radius": 0.1,
-                            "position":[0.3,0.1]
+                            "radius": 0.2,
+                            "position":[0,0.2]
                         },
                         "state": "Vulnerable"
                     }
@@ -515,19 +524,35 @@
                 "hurt_sircles": [
                     {
                         "colision_shape": {
-                            "radius": 0.2,
-                            "position":[0,0.25]
+                            "radius": 0.15,
+                            "position":[0,0.5]
                         },
                         "state": "Vulnerable"
                     },
                     {
                         "colision_shape": {
-                            "radius": 0.1,
-                            "position":[0.3,0.1]
+                            "radius": 0.2,
+                            "position":[0,0.2]
                         },
                         "state": "Vulnerable"
                     }
                 ],
+				"hit_sircles": [
+					{
+						"colision_shape": {
+							"radius": 0.13,
+							"position":[0.1,0.75]
+						},
+						"impact_events": [ ]
+					},
+					{
+						"colision_shape": {
+							"radius": 0.1,
+							"position":[0.15,0.5]
+						},
+						"impact_events": [ ]
+					}
+				],
                 "texture": {
                     "path": "./assets/characters/ken.png",
 					"scale": 2,
@@ -541,15 +566,15 @@
                 "hurt_sircles": [
                     {
                         "colision_shape": {
-                            "radius": 0.2,
-                            "position":[0,0.25]
+                            "radius": 0.15,
+                            "position":[0,0.5]
                         },
                         "state": "Vulnerable"
                     },
                     {
                         "colision_shape": {
-                            "radius": 0.1,
-                            "position":[0.3,0.1]
+                            "radius": 0.2,
+                            "position":[0,0.2]
                         },
                         "state": "Vulnerable"
                     }
@@ -567,15 +592,15 @@
                 "hurt_sircles": [
                     {
                         "colision_shape": {
-                            "radius": 0.2,
-                            "position":[0,0.25]
+                            "radius": 0.15,
+                            "position":[0,0.5]
                         },
                         "state": "Vulnerable"
                     },
                     {
                         "colision_shape": {
-                            "radius": 0.1,
-                            "position":[0.3,0.1]
+                            "radius": 0.2,
+                            "position":[0,0.2]
                         },
                         "state": "Vulnerable"
                     }
@@ -635,6 +660,15 @@
                         "state": "Vulnerable"
                     }
 				],
+				"hit_sircles": [
+					{
+						"colision_shape": {
+							"radius": 0.1,
+							"position":[0.35,0.45]
+						},
+						"impact_events": [ ]
+					}
+				],
                 "texture": {
                     "path": "./assets/characters/ken.png",
 					"scale": 2,
@@ -686,6 +720,15 @@
                         },
                         "state": "Vulnerable"
                     }
+				],
+				"hit_sircles": [
+					{
+						"colision_shape": {
+							"radius": 0.1,
+							"position":[-0.2,0.45]
+						},
+						"impact_events": [ ]
+					}
 				],
                 "texture": {
                     "path": "./assets/characters/ken.png",
@@ -755,6 +798,15 @@
                         "state": "Vulnerable"
                     }
                 ],
+				"hit_sircles": [
+					{
+						"colision_shape": {
+							"radius": 0.13,
+							"position":[0.33,0.2]
+						},
+						"impact_events": [ ]
+					}
+				],
                 "texture": {
                     "path": "./assets/characters/ken.png",
 					"scale": 2,
