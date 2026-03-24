@@ -37,7 +37,7 @@ type Vector2 = [f32;2];
 #[derive(Serialize, Deserialize, Clone)]
 pub enum FrameEvent{
 
-    // todo!("přidat možnosti jestli je přidávání velocity 'damage'"),
+    MultiplyVelocity(Vector2),
     SetVelocity(Vector2),
     AddVelocity(Vector2),
 

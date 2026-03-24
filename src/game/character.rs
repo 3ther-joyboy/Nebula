@@ -404,6 +404,10 @@ impl CharacterInstance {
     }
     fn apply_frame_event(&mut self,event: &FrameEvent, source: &Self) {
         match event {
+            FrameEvent::MultiplyVelocity(vec) => {
+                self.velocity[0] *= vec[0];
+                self.velocity[1] *= vec[1];
+            },
             FrameEvent::SetVelocityFromPoint(_vec,_force) => {
                 todo!();
             },
@@ -415,8 +419,10 @@ impl CharacterInstance {
                 self.velocity[1] = vec[1];
             },
             FrameEvent::AddVelocity(vec) => {
-                self.velocity[0] += vec[0] * source.direction.to_float() * self.damage;
-                self.velocity[1] += vec[1] * self.damage;
+                const MINIMAL: f32 = 0.1;
+                let damage = if source.object_id == self.object_id {0.0} else {1.0};
+                self.velocity[0] += vec[0] * source.direction.to_float() * (self.damage * damage + MINIMAL);
+                self.velocity[1] += vec[1] * (self.damage * damage + MINIMAL);
             },
             FrameEvent::MoveBy(pos) => {
                 self.position[0] += pos[0] * source.direction.to_float() * self.damage;
