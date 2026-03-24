@@ -400,7 +400,11 @@
 							"radius": 0.1,
 							"position":[0.35,0.1]
 						},
-						"impact_events": [ ]
+						"impact_events": [
+							{"DealDamage":0.05},
+							{"ApplyHitStun":5},
+							{"AddVelocity":[0.3,0.2]}
+						]
 					}
 				],
                 "events": [ ],
@@ -543,14 +547,22 @@
 							"radius": 0.13,
 							"position":[0.1,0.75]
 						},
-						"impact_events": [ ]
+						"impact_events": [ 
+							{"DealDamage":0.08},
+							{"ApplyHitStun":10},
+							{"AddVelocity":[0,0.5]}
+						]
 					},
 					{
 						"colision_shape": {
 							"radius": 0.1,
 							"position":[0.15,0.5]
 						},
-						"impact_events": [ ]
+						"impact_events": [
+							{"DealDamage":0.03},
+							{"ApplyHitStun":3},
+							{"AddVelocity":[0.2,0.2]}
+						]
 					}
 				],
                 "texture": {
@@ -666,7 +678,11 @@
 							"radius": 0.1,
 							"position":[0.35,0.45]
 						},
-						"impact_events": [ ]
+						"impact_events": [
+							{"DealDamage":0.1},
+							{"ApplyHitStun":9},
+							{"AddVelocity":[0.2,0.2]}
+						]
 					}
 				],
                 "texture": {
@@ -727,7 +743,11 @@
 							"radius": 0.1,
 							"position":[-0.2,0.45]
 						},
-						"impact_events": [ ]
+						"impact_events": [
+							{"DealDamage":0.05},
+							{"ApplyHitStun":7},
+							{"AddVelocity":[-0.2,-0.1]}
+						]
 					}
 				],
                 "texture": {
@@ -804,7 +824,11 @@
 							"radius": 0.13,
 							"position":[0.33,0.2]
 						},
-						"impact_events": [ ]
+						"impact_events": [
+							{"DealDamage":0.04},
+							{"ApplyHitStun":5},
+							{"AddVelocity":[0.3,0]}
+						]
 					}
 				],
                 "texture": {

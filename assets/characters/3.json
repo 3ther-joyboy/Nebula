@@ -385,7 +385,19 @@
                         "state": "Vulnerable"
                     }
                 ],
-                "hit_sircles": [],
+				"hit_sircles": [
+					{
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0.3,0.4]
+                        },
+						"impact_events": [
+							{"DealDamage":0.07},
+							{"ApplyHitStun":6},
+							{"AddVelocity":[0.2,0.0]}
+						]
+					}
+				],
                 "events": [ ],
                 "texture": {
                     "path": "./assets/characters/cammy.png",
@@ -443,7 +455,6 @@
                         "state": "Vulnerable"
                     }
                 ],
-                "hit_sircles": [],
                 "events": [ {"ChangeActionState":"Acting"} ],
                 "texture": {
                     "path": "./assets/characters/cammy.png",
@@ -471,7 +482,6 @@
                         "state": "Vulnerable"
                     }
                 ],
-                "hit_sircles": [],
                 "events": [  ],
                 "texture": {
                     "path": "./assets/characters/cammy.png",
@@ -499,7 +509,6 @@
                         "state": "Vulnerable"
                     }
                 ],
-                "hit_sircles": [],
                 "events": [  ],
                 "texture": {
                     "path": "./assets/characters/cammy.png",
@@ -520,7 +529,19 @@
                         "state": "Vulnerable"
                     }
 				],
-                "hit_sircles": [],
+				"hit_sircles": [
+					{
+						"colision_shape": {
+							"radius": 0.15,
+							"position":[0.15,0.6]
+						},
+						"impact_events": [
+							{"AddVelocity":[0.1,0.3]},
+							{"DealDamage":0.1},
+							{"ApplyHitStun":10}
+						]
+					}
+				],
                 "events": [
 					{"SetVelocity":[0.02,0.06]}
 				],
@@ -594,7 +615,6 @@
                         "state": "Vulnerable"
                     }
                 ],
-                "hit_sircles": [],
                 "events": [ {"ChangeActionState":"Acting"} ],
                 "texture": {
                     "path": "./assets/characters/cammy.png",
@@ -622,8 +642,31 @@
                         "state": "Vulnerable"
                     }
                 ],
-                "hit_sircles": [],
-                "events": [ {"ChangeActionState":"Acting"} ],
+				"hit_sircles": [
+					{
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0.3,0.2]
+                        },
+						"impact_events": [
+							{"DealDamage":0.03},
+							{"ApplyHitStun":3},
+							{"AddVelocity":[0.1,0.0]}
+						]
+					},
+					{
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0.4,0.2]
+                        },
+						"impact_events": [
+							{"DealDamage":0.08},
+							{"ApplyHitStun":7},
+							{"AddVelocity":[0.3,0.0]}
+						]
+					}
+				],
+                "events": [ ],
                 "texture": {
                     "path": "./assets/characters/cammy.png",
 					"scale": 2,
@@ -650,8 +693,31 @@
                         "state": "Vulnerable"
                     }
                 ],
-                "hit_sircles": [],
-                "events": [ {"ChangeActionState":"Acting"} ],
+				"hit_sircles": [
+					{
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0.3,0.2]
+                        },
+						"impact_events": [
+							{"DealDamage":0.03},
+							{"ApplyHitStun":3},
+							{"AddVelocity":[0.1,0.0]}
+						]
+					},
+					{
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0.4,0.2]
+                        },
+						"impact_events": [
+							{"DealDamage":0.08},
+							{"ApplyHitStun":7},
+							{"AddVelocity":[0.3,0.0]}
+						]
+					}
+				],
+                "events": [  ],
                 "texture": {
                     "path": "./assets/characters/cammy.png",
 					"scale": 2,
@@ -678,8 +744,31 @@
                         "state": "Vulnerable"
                     }
                 ],
-                "hit_sircles": [],
-                "events": [ {"ChangeActionState":"Acting"} ],
+				"hit_sircles": [
+					{
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0.3,0.2]
+                        },
+						"impact_events": [
+							{"DealDamage":0.03},
+							{"ApplyHitStun":3},
+							{"AddVelocity":[0.1,0.0]}
+						]
+					},
+					{
+                        "colision_shape": {
+                            "radius": 0.15,
+                            "position":[0.4,0.2]
+                        },
+						"impact_events": [
+							{"DealDamage":0.08},
+							{"ApplyHitStun":7},
+							{"AddVelocity":[0.3,0.0]}
+						]
+					}
+				],
+                "events": [ ],
                 "texture": {
                     "path": "./assets/characters/cammy.png",
 					"scale": 2,
@@ -706,8 +795,7 @@
                         "state": "Vulnerable"
                     }
                 ],
-                "hit_sircles": [],
-                "events": [ {"ChangeActionState":"Acting"} ],
+                "events": [  ],
                 "texture": {
                     "path": "./assets/characters/cammy.png",
 					"scale": 2,
@@ -736,7 +824,6 @@
                         "state": "Vulnerable"
                     }
                 ],
-                "hit_sircles": [],
                 "events": [ {"ChangeActionState":"Acting"} ],
                 "texture": {
                     "path": "./assets/characters/cammy.png",
@@ -764,7 +851,19 @@
                         "state": "Vulnerable"
                     }
                 ],
-                "hit_sircles": [],
+				"hit_sircles": [
+					{
+						"colision_shape": {
+							"radius": 0.1,
+							"position":[0.2,0.45]
+						},
+						"impact_events": [
+							{"DealDamage":0.03},
+							{"ApplyHitStun":6},
+							{"AddVelocity":[0.1,0.0]}
+						]
+					}
+				],
                 "events": [ ],
                 "texture": {
                     "path": "./assets/characters/cammy.png",
@@ -792,7 +891,19 @@
                         "state": "Vulnerable"
                     }
                 ],
-                "hit_sircles": [],
+				"hit_sircles": [
+					{
+						"colision_shape": {
+							"radius": 0.15,
+							"position":[0.2,0.25]
+						},
+						"impact_events": [
+							{"DealDamage":0.05},
+							{"ApplyHitStun":8},
+							{"AddVelocity":[0.0,-0.2]}
+						]
+					}
+				],
                 "events": [ ],
                 "texture": {
                     "path": "./assets/characters/cammy.png",

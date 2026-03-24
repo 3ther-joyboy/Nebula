@@ -354,7 +354,7 @@
 					"position":[4,438],
 					"dimensions":[54,88]
                 },
-				"hold": 1
+				"hold": 3
             },
             {
                 "hurt_sircles": [
@@ -380,7 +380,7 @@
 					"position":[64,438],
 					"dimensions":[62,88]
                 },
-				"hold": 3
+				"hold": 2
             },
             {
                 "hurt_sircles": [
@@ -407,7 +407,7 @@
 						},
 						"impact_events": [
 							{"DealDamage":0.05},
-							{"ApplyHitStun":15},
+							{"ApplyHitStun":10},
 							{"AddVelocity":[0.3,0.0]}
 						]
 					},
@@ -450,7 +450,6 @@
                         "state": "Vulnerable"
                     }
                 ],
-                "hit_sircles": [],
                 "events": [
 					{"ChangeActionState":"Actionable"}
 				],
