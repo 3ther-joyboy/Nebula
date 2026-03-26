@@ -546,7 +546,8 @@
 					}
 				],
                 "events": [
-					{"SetVelocity":[0,0.05]}
+					{"MultiplyVelocity":[1,0]},
+					{"AddVelocity":[0,0.05]}
 				],
                 "texture": {
                     "path": "./assets/characters/Lee.png",

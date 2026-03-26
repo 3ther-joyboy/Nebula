@@ -666,7 +666,10 @@
 						]
 					}
 				],
-                "events": [ ],
+                "events": [
+					{"MultiplyVelocity":[1,0.8]},
+					{"AddVelocity":[0.01,0]}
+				],
                 "texture": {
                     "path": "./assets/characters/cammy.png",
 					"scale": 2,
@@ -717,7 +720,9 @@
 						]
 					}
 				],
-                "events": [  ],
+                "events": [
+					{"MultiplyVelocity":[1,0.8]}
+				],
                 "texture": {
                     "path": "./assets/characters/cammy.png",
 					"scale": 2,
@@ -768,7 +773,9 @@
 						]
 					}
 				],
-                "events": [ ],
+                "events": [
+					{"MultiplyVelocity":[1,0.8]}
+				],
                 "texture": {
                     "path": "./assets/characters/cammy.png",
 					"scale": 2,
@@ -795,7 +802,9 @@
                         "state": "Vulnerable"
                     }
                 ],
-                "events": [  ],
+                "events": [
+					{"MultiplyVelocity":[0.9,1]}
+				],
                 "texture": {
                     "path": "./assets/characters/cammy.png",
 					"scale": 2,
