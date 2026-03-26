@@ -1,0 +1,38 @@
+{
+	"background": {
+		"path": "./assets/maps/roof_tops.jpg",
+		"dimensions":[1920,1080],
+		"scale": 1,
+		"offset":[0,0],
+		"position":[0,0]
+	},
+	"stage": {
+		"path": "./assets/maps/roof_tops_roofs.png",
+		"dimensions":[1920,1080],
+		"scale": 0.85,
+		"offset":[-960,-540],
+		"position":[0,0]
+	},
+	"statics": [
+		{
+			"position": [-0.1,-0.1],
+			"size": 3.2,
+			"rotation": "Up"
+		},
+		{
+			"position": [-0.1,0.67],
+			"size": 2.8,
+			"rotation": "Up"
+		},
+		{
+			"position": [2.05,-0.75],
+			"size": 0.3,
+			"rotation": "Up"
+		},
+		{
+			"position": [1.95,0.65],
+			"size": 0.1,
+			"rotation": "Up"
+		}
+	]
+}

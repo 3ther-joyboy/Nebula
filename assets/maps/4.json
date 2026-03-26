@@ -1,0 +1,59 @@
+
+{
+	"background": {
+		"path": "./assets/maps/flat_stage_skybox.png",
+		"dimensions":[1544,848],
+		"scale": 1,
+		"offset":[0,0],
+		"position":[0,0]
+	},
+	"stage": {
+		"path": "./assets/maps/custom_air.png",
+		"dimensions":[479,198],
+		"scale": 2.5,
+		"offset":[-239,-99],
+		"position":[0,0]
+	},
+	"statics": [
+		{
+			"position": [0.3,-0.55],
+			"size": 2,
+			"rotation": "Up"
+		},
+		{
+			"position": [0,0.48],
+			"size": 1.2,
+			"rotation": "Up"
+		},
+		{
+			"position": [-1.5,-0.1],
+			"size": 1.2,
+			"rotation": "Up"
+		},
+
+
+		{
+			"comment":"car roof",
+			"position": [0.8,0],
+			"size": 0.55,
+			"rotation": "Up"
+		},
+		{
+			"comment":"car",
+			"position": [0.65,-0.25],
+			"size": 0.6,
+			"rotation": "Up"
+		},
+		{
+			"comment":"wall",
+			"position": [1.3,-0.2],
+			"size": 0.9,
+			"rotation": "Left"
+		},
+		{
+			"position": [1.7,0.23],
+			"size": 0.7,
+			"rotation": "Up"
+		}
+	]
+}
