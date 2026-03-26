@@ -1,0 +1,38 @@
+{
+	"background": {
+		"path": "./assets/maps/freedom_background.png",
+		"dimensions":[1544,848],
+		"scale": 1,
+		"offset":[-772,-424],
+		"position":[0,0]
+	},
+	"stage": {
+		"path": "./assets/maps/freedom_stage.png",
+		"dimensions":[1544,848],
+		"scale": 1,
+		"offset":[-762,-464],
+		"position":[0,0]
+	},
+	"statics": [
+		{
+			"position": [0.2,-0.6],
+			"size": 1,
+			"rotation": "Up"
+		},
+		{
+			"position": [1.1,-1.2],
+			"size": 0.8,
+			"rotation": "Up"
+		},
+		{
+			"position": [1.1,-1.5],
+			"size": 0.8,
+			"rotation": "Up"
+		},
+		{
+			"position": [-2.3,-0.2],
+			"size": 1.2,
+			"rotation": "Up"
+		}
+	]
+}
