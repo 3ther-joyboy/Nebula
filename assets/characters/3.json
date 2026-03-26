@@ -1,8 +1,8 @@
 {
     "id": 3,
     "name": "Cammy",
-    "weight": 0.5,
-    "air_jump_count": 2,
+    "weight": 0.8,
+    "air_jump_count": 0,
 	"jump": 0.06,
     "aceleration": 0.7,
     "max_speed": 0.07,
