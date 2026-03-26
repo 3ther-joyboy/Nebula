@@ -192,7 +192,9 @@ pub struct CharacterInstance {
     animation_frame: usize,
 
     #[serde(skip_serializing,skip_deserializing)]
-    pub input: CharacterInput
+    pub input: CharacterInput,
+    #[serde(skip_serializing,skip_deserializing)]
+    pub last_input: CharacterInput
 }
 impl CharacterInstance {
     const AIR_ACTION_DEFAULT: u8 = 2;
@@ -222,6 +224,7 @@ impl CharacterInstance {
             animation_frame: 0,
 
             input: CharacterInput::new(),
+            last_input: CharacterInput::new(),
         }
     }
     pub fn reset(&mut self) {
@@ -256,13 +259,31 @@ impl CharacterInstance {
             for hurt_sircle in &hurt_sircles {
                 if hurt_sircle.colision_shape.overlap(&self.position,&hit_sircle.colision_shape,&enemy.position) {
                     for event in &hit_sircle.impact_events {
-                            self.apply_frame_event(&event,enemy);
+                        if let Some(character) = char_sheets.get(&self.character) {
+                            self.apply_frame_event(&event,enemy,&character);
+                        } else {
+                            println!("Character with id \"{0}\" not found",self.character);
+                        }
                     }
                     break;
                 }
             }
         }
     }
+    fn jump_just_pressed(&self) -> bool {
+        self.input.jump && !self.last_input.jump
+    }
+    fn light_just_pressed(&self) -> bool {
+        self.input.light_attack && !self.last_input.light_attack
+    }
+    fn hevy_just_pressed(&self) -> bool {
+        self.input.heavy_attack && !self.last_input.heavy_attack
+    }
+    #[allow(dead_code)]
+    fn spec_just_pressed(&self) -> bool {
+        self.input.special && !self.last_input.special
+    }
+    
     pub fn update(&mut self, char_sheet: &Character, map: &crate::game::MapInformation,delta: &f32) {
         const GRAVITY: f32 = 0.1;
 
@@ -333,7 +354,7 @@ impl CharacterInstance {
         }
         match self.state.clone() {
             State::Actionable => {
-                if self.input.heavy_attack {
+                if self.hevy_just_pressed() {
                     if self.airborn {
                         if 0 < self.air_action {
                             self.air_action -= 1;
@@ -342,7 +363,7 @@ impl CharacterInstance {
                     } else {
                         self.change_animation(AnimationState::HeavyAttack);
                     }
-                } else if self.input.light_attack {
+                } else if self.light_just_pressed() {
                     if self.airborn {
                         self.change_animation(AnimationState::AirBornLightAttack);
                     } else {
@@ -350,11 +371,12 @@ impl CharacterInstance {
                     }
                 } else {
                     // Input Logick
-                    if self.input.jump && (!self.airborn || 0 < self.air_jump)  {
+                    if self.jump_just_pressed() && (!self.airborn || 0 < self.air_jump)  {
                         self.velocity[1] = char_sheet.jump;
                         if self.airborn {
                             self.air_jump -= 1;
-                        }                    }
+                        }  
+                    }
                     let input_direction = self.input.dir.clone();
                     match &input_direction {
                         Some(some) => {
@@ -394,6 +416,7 @@ impl CharacterInstance {
         if Math::distance(&self.position,&[0.0,0.0]) > 5.0 {
             self.reset();
         }
+        self.last_input = self.input.clone();
     }
     fn change_animation(&mut self, anim: AnimationState) {
         if self.animation != anim {
@@ -402,7 +425,7 @@ impl CharacterInstance {
             self.animation_frame = 0;
         }
     }
-    fn apply_frame_event(&mut self,event: &FrameEvent, source: &Self) {
+    fn apply_frame_event(&mut self,event: &FrameEvent, source: &Self, character: &Character) {
         match event {
             FrameEvent::MultiplyVelocity(vec) => {
                 self.velocity[0] *= vec[0];
@@ -420,9 +443,13 @@ impl CharacterInstance {
             },
             FrameEvent::AddVelocity(vec) => {
                 const MINIMAL: f32 = 0.1;
-                let damage = if source.object_id == self.object_id {0.0} else {1.0};
-                self.velocity[0] += vec[0] * source.direction.to_float() * (self.damage * damage + MINIMAL);
-                self.velocity[1] += vec[1] * (self.damage * damage + MINIMAL);
+                if source.object_id == self.object_id {
+                    self.velocity[0] += vec[0];
+                    self.velocity[1] += vec[1];
+                } else {
+                    self.velocity[0] += vec[0] * source.direction.to_float() * (self.damage + MINIMAL)/character.weight;
+                    self.velocity[1] += vec[1] * (self.damage + MINIMAL)/character.weight;
+                }
             },
             FrameEvent::MoveBy(pos) => {
                 self.position[0] += pos[0] * source.direction.to_float() * self.damage;
@@ -469,7 +496,7 @@ impl CharacterInstance {
         }
 
         for event in &anim[self.animation_frame].events {
-            self.apply_frame_event(event,&self.clone());
+            self.apply_frame_event(event,&self.clone(),character);
         }
     }
     pub fn get_hitboxes(&self, char_sheet: &HashMap<u32,Character>) -> (Vec<HitSircle>,Vec<ColisionSircle>) {
