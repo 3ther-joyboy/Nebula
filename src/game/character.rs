@@ -444,7 +444,7 @@ impl CharacterInstance {
             FrameEvent::AddVelocity(vec) => {
                 const MINIMAL: f32 = 0.1;
                 if source.object_id == self.object_id {
-                    self.velocity[0] += vec[0];
+                    self.velocity[0] += vec[0] * source.direction.to_float();
                     self.velocity[1] += vec[1];
                 } else {
                     self.velocity[0] += vec[0] * source.direction.to_float() * (self.damage + MINIMAL)/character.weight;
