@@ -1,0 +1,44 @@
+
+{
+	"background": {
+		"path": "./assets/maps/freedom_background.png",
+		"dimensions":[1544,848],
+		"scale": 1,
+		"offset":[-772,-424],
+		"position":[0,0]
+	},
+	"stage": {
+		"path": "./assets/maps/freedom_air_plus.png",
+		"dimensions":[1544,848],
+		"scale": 1,
+		"offset":[-762,-464],
+		"position":[0,0]
+	},
+	"statics": [
+		{
+			"position": [0.25,-0.8],
+			"size": 0.9,
+			"rotation": "Up"
+		},
+		{
+			"position": [-0.95,-0.35],
+			"size": 0.9,
+			"rotation": "Up"
+		},
+		{
+			"position": [-0.8,0.3],
+			"size": 0.9,
+			"rotation": "Up"
+		},
+		{
+			"position": [-1.5,-1.3],
+			"size": 0.8,
+			"rotation": "Up"
+		},
+		{
+			"position": [-1.5,-1.7],
+			"size": 0.8,
+			"rotation": "Up"
+		}
+	]
+}
