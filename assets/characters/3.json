@@ -626,22 +626,6 @@
 				"hold": 8
             },
             {
-                "hurt_sircles": [
-                    {
-                        "colision_shape": {
-                            "radius": 0.15,
-                            "position":[0.1,0.2]
-                        },
-                        "state": "Vulnerable"
-                    },
-                    {
-                        "colision_shape": {
-                            "radius": 0.15,
-                            "position":[-0.1,0.2]
-                        },
-                        "state": "Vulnerable"
-                    }
-                ],
 				"hit_sircles": [
 					{
                         "colision_shape": {
@@ -680,22 +664,6 @@
 				"hold": 4
             },
             {
-                "hurt_sircles": [
-                    {
-                        "colision_shape": {
-                            "radius": 0.15,
-                            "position":[0.1,0.2]
-                        },
-                        "state": "Vulnerable"
-                    },
-                    {
-                        "colision_shape": {
-                            "radius": 0.15,
-                            "position":[-0.1,0.2]
-                        },
-                        "state": "Vulnerable"
-                    }
-                ],
 				"hit_sircles": [
 					{
                         "colision_shape": {
@@ -733,22 +701,6 @@
 				"hold": 4
             },
             {
-                "hurt_sircles": [
-                    {
-                        "colision_shape": {
-                            "radius": 0.15,
-                            "position":[0.1,0.2]
-                        },
-                        "state": "Vulnerable"
-                    },
-                    {
-                        "colision_shape": {
-                            "radius": 0.15,
-                            "position":[-0.1,0.2]
-                        },
-                        "state": "Vulnerable"
-                    }
-                ],
 				"hit_sircles": [
 					{
                         "colision_shape": {
