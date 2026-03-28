@@ -1,0 +1,59 @@
+
+{
+	"background": {
+		"path": "./assets/maps/my_home.png",
+		"dimensions":[1280,960],
+		"scale": 1,
+		"offset":[-590,-580],
+		"position":[0,0]
+	},
+	"stage": {
+		"path": "./assets/maps/irl_stage.png",
+		"dimensions":[1280,960],
+		"scale": 1,
+		"offset":[-590,-580],
+		"position":[0,0]
+	},
+	"statics": [
+		{
+			"position": [0.25,-0.6],
+			"size": 1,
+			"rotation": "Up"
+		},
+		{
+			"position": [0.25,0.15],
+			"size": 1.2,
+			"rotation": "Up"
+		},
+		{
+			"position": [0.9,-0.3],
+			"size": 0.3,
+			"rotation": "Up"
+		},
+		{
+			"position": [-0.4,-0.25],
+			"size": 0.3,
+			"rotation": "Up"
+		},
+		{
+			"position": [0.8,-0.55],
+			"size": 0.3,
+			"rotation": "Left"
+		},
+		{
+			"position": [1,-0.85],
+			"size": 1,
+			"rotation": "Right"
+		},
+		{
+			"position": [-0.3,-0.5],
+			"size": 0.3,
+			"rotation": "Right"
+		},
+		{
+			"position": [-0.5,-0.85],
+			"size": 1,
+			"rotation": "Left"
+		}
+	]
+}
