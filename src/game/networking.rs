@@ -7,6 +7,7 @@ use serde::{
 };
 use std::io::Read;
 
+/// List of header that can any request have or has to have to work.
 #[derive(Debug)]
 pub struct Headers {
     pub request_type: String,
@@ -28,6 +29,7 @@ impl Headers {
             body_length: 0,
         }
     }
+    /// Parsing headers from new incoming mesagge.
     pub fn new(stream: &mut TcpStream) -> Headers {
         let mut out = Self::none();
         if let Some(line) = get_line(stream) {
@@ -81,10 +83,12 @@ pub fn get_responce<T: for<'a> Deserialize<'a>>(stream: &mut TcpStream, headers:
     None
 }
 
+/// Statuses that can be returned on request
 pub enum ResponseStatus {
     Ok,
     Error,
     Unauthorized,
+    /// While parsing your request there was found issue
     ParseError,
     None,
     Forbiden,
@@ -125,7 +129,7 @@ impl BodyType {
         }
     }
 }
-
+/// Object that is turnend in to bits and send along the traffic with headers and body
 pub struct Response {
     status: ResponseStatus,
     host_name: String, 
@@ -146,6 +150,8 @@ impl Response {
     pub fn status(err: ResponseStatus) -> Response {
         Self::new(err,BodyType::JSON,"")
     }
+    /// Generates string that can be send along the traffic, few additional information is added
+    /// like current time stamp.
     pub fn to_string(&self) -> String {
         let status = self.status.to_string();
         let server_name = self.host_name.clone();
@@ -174,6 +180,7 @@ Content-Type: {body_type}
         )
     }
 }
+/// Object that can be then taken by character and played out.
 #[derive(Debug,Default,Serialize, Deserialize, Clone)]
 pub struct CharacterInput {
     pub dir: Option<Direction>,
@@ -197,6 +204,7 @@ impl CharacterInput {
             down: false,
         }
     } 
+    /// Sets everything to neutral position.
     pub fn reset(&mut self) {
         self.light_attack = false;
         self.heavy_attack = false;
@@ -204,6 +212,8 @@ impl CharacterInput {
         self.jump = false;
     }
 }
+/// Packed used for comunication between client and server, It has identification for user and
+/// authorazation for server and input for controling characters.
 #[derive(Debug,Default,Serialize, Deserialize, Clone)]
 pub struct GameControlPacket {
     pub input: CharacterInput,

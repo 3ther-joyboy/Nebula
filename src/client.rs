@@ -19,6 +19,7 @@ use std::thread;
 use std::sync::mpsc;
 
 
+/// Valit actions all inputs map to.
 #[derive(Clone)]
 enum InputEvents {
     Jump,
@@ -35,6 +36,9 @@ enum InputEvents {
     Quit,
 }
 
+/// Main object that manages logic for the client that connects to the physic server.
+/// Object contains information about how to connect to server, how player interacts with the game,
+/// and options how to render.
 #[allow(dead_code)]
 pub struct Client {
     name: String,
@@ -94,6 +98,7 @@ impl Client {
             render: crate::client::renderer::RenderOptions::new(),
         }
     } 
+    /// Enabling custom rendering for debbuging purposes.
     pub fn custom_rendering(&mut self,coliders: bool, hitboxes: bool, hurtboxes: bool) {
         self.render.hitboxes = hitboxes;
         self.render.coliders = coliders;
@@ -106,6 +111,10 @@ impl Client {
         let assets = String::from("./assets/");
         Self::new(password,name,addres,60.0,assets)
     }
+    /// Start of network threath that comunicates with a server and sends recevad information to
+    /// the rendering thread.
+    /// All inputs sends from the window are here filtered according to the inputmap and compressed
+    /// to a comunication object that is send thourght the network.
     pub fn start(&mut self) {
         self.render.assets = self.assets.clone();
 

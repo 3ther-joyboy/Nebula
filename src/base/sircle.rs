@@ -6,6 +6,7 @@ use glium::{
 use crate::client::renderer::GameRanderer;
 use crate::base::Math;
 
+/// Sircle for easyer physic calculation.
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Sircle {
     pub radius: f32,

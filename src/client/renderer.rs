@@ -29,6 +29,7 @@ use glium::{
 use crate::game::map::Map;
 
 
+/// Base block for drawing on to screen with textures.
 #[derive(Copy, Clone)]
 struct Vertex {
     position: [f32;2],
@@ -45,6 +46,8 @@ impl Vertex {
     }
 }
 
+/// Information about how to load texture in to memory, what parts to cut out and a pointer to the
+/// texture in GPU memory.
 #[derive(Serialize, Deserialize)]
 pub struct Texture {
     path: String,
@@ -58,6 +61,8 @@ pub struct Texture {
     texture: Option<glium::texture::Texture2d>,
 }
 impl Clone for Texture {
+    /// Custom clone parameter, this ignores the pointer to the GPU to avoid possible issues with
+    /// memory.
     fn clone(&self) -> Texture {
         Texture {
             path: self.path.clone(),
@@ -83,6 +88,7 @@ impl Texture {
             texture: Option::None,
         }
     }
+    /// Creates box with correct position and flips it if needed.
     fn new_vertex_shape(&self,dim: (f32,f32), off: (f32,f32),dir: &Direction) -> Vec<Vertex> {
         let dir = match dir {
             Direction::Left => -1.0,
@@ -100,6 +106,7 @@ impl Texture {
             Vertex::new([offset_x,offset_y],[0.0, 0.0]),
         ]
     }
+    /// Tryes to load texture from files on to GPU memory. If it fails, program crashes. (unwrap) 
     pub fn load_texture(&mut self,  display: &mut Display<WindowSurface>) {
         let image = ImageReader::open(self.path.clone()).unwrap().decode().unwrap().crop(self.position[0],self.position[1],self.dimensions[0],self.dimensions[1]).to_rgba8();
         let image_dimensions = image.dimensions();
@@ -139,6 +146,7 @@ impl Texture {
         }
 
     "#;
+    /// Draws directly on to screen without relative position. (relative to screen edges)
     pub fn draw(&self ,display: &mut Display<WindowSurface>,frame: &mut glium::Frame) {
         let shape = vec![
             Vertex::new([-1.0, -1.0],[0.0, 0.0]),
@@ -158,6 +166,7 @@ impl Texture {
 
         frame.draw(&vertex_buffer, &indices, &program_err.unwrap(), &uniforms, &Self::parameters()).unwrap();
     }
+    /// Draws on screen using in game cordenat system.
     pub fn draw_on(&self ,display: &mut Display<WindowSurface>,frame: &mut glium::Frame,post: [f32;2],dir: &Direction) {
         let (x,y) = display.get_framebuffer_dimensions();
         let scaled_dimensions = (1.0/(x as f32 *1.0),1.0/(y as f32 *1.0));
@@ -174,6 +183,7 @@ impl Texture {
 
         frame.draw(&vertex_buffer, &indices, &program_err.unwrap(), &uniforms, &Self::parameters()).unwrap();
     }
+    /// Returns custom parameters that use alpha mixing.
     fn parameters() -> glium::DrawParameters<'static> {
         let mut draw_parameters: glium::DrawParameters = Default::default();
         draw_parameters.blend = glium::draw_parameters::Blend::alpha_blending();
@@ -181,6 +191,8 @@ impl Texture {
     }
 }
 
+/// Renderer that has all the information for rendering any frame, streams all incoming inputs from
+/// window in to a stream.
 pub struct GameRanderer {
     input_channel: Sender<WindowEvent>,
     map_channel: Receiver<Map>,
@@ -223,6 +235,7 @@ impl GameRanderer {
     }
 }
 impl GameRanderer {
+    /// Draws one triangle of color anywhere on screen using in game cordenate system.
     pub fn draw_triangle_on( display: &mut Display<WindowSurface>, frame: &mut glium::Frame, post: ([f32;2],[f32;2],[f32;2]),color: [f32;4]) {
         #[derive(Copy, Clone)]
         struct Ver {
@@ -262,11 +275,13 @@ impl GameRanderer {
     }
 }
 impl ApplicationHandler for GameRanderer {
+    /// Event that happens of re-entering the window after leaving it.
     fn resumed(&mut self, _: &ActiveEventLoop) {
         let mut target = self.display.draw();
         target.clear_color(1.0, 1.0, 1.0, 1.0);
         target.finish().unwrap();
     }
+    /// Happens every frame of window rendering.
     fn window_event(&mut self, window: &ActiveEventLoop, _: WindowId, event: WindowEvent) {
         self.input_channel.send(event.clone()).expect("Sending inputs to network core failed");
         match event {
@@ -327,6 +342,7 @@ impl ApplicationHandler for GameRanderer {
         }
 
     }
+    /// Bussy waits... Redirects to window update.
     fn about_to_wait(&mut self, _: &ActiveEventLoop) {
         self.window.request_redraw();
     }

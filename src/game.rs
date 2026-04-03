@@ -18,6 +18,8 @@ use std::{
     net::{TcpListener, TcpStream},
 };
 
+/// Object that holds information about the player to be able play or be automaticly kicked out of
+/// the game after inactivity.
 #[derive(Clone)]
 pub struct Player {
     #[allow(unused)]
@@ -39,6 +41,7 @@ impl Player {
         }
     }
 }
+/// Main object for processing game logic, from user managment to physics 
 pub struct Game {
     password: String,
     addres: String,
@@ -51,6 +54,7 @@ pub struct Game {
     refresh_rate: f32,
 }
 impl Game {
+    /// Loads deafult values for testing on a local server
     pub fn default() -> Game {
         Game {
             password: String::from(""),
@@ -62,6 +66,7 @@ impl Game {
             refresh_rate: 60.0,
         }
     }
+    /// Prepears Game object for start and loades all maps and characters in to memory
     pub fn new(password: String,addres: String,refresh_rate: f32,map_id: usize,assets: String) -> Game {
         Game {
             password,
@@ -73,6 +78,7 @@ impl Game {
             refresh_rate,
         }
     }
+    /// Enables networking and starts the physic simulation in a nother thread
     pub fn start(&mut self) {
         let listener = TcpListener::bind(self.addres.clone())
             .expect("Binding addres was unsucesfull");
@@ -106,6 +112,7 @@ impl Game {
             thread::sleep(frame_time-(std::time::Instant::now() - next_frame));
         }
     }
+    /// Clones the list of all players and returnes it.
     fn players_clone(players_ref: &Arc<Mutex<HashMap<String,Player>>>) -> HashMap<String,Player> {
         loop { if let Ok(ref mut players) = players_ref.try_lock(){
             let out = players.clone();
@@ -113,6 +120,7 @@ impl Game {
             return out;
         }};
     }
+    /// If no player of that name exists, create that player.
     fn new_player(input: JoinRequest,players_ref: &Arc<Mutex<HashMap<String,Player>>>) -> Result<(),Response> {
         loop { if let Ok(ref mut players) = players_ref.try_lock(){
             if let Option::None = players.get(&input.player_name) {
@@ -123,6 +131,7 @@ impl Game {
             }
         }};
     }
+    /// Updates player according to information in GameControlPacked sended by that player.
     fn update_player(input: GameControlPacket,players_ref: &Arc<Mutex<HashMap<String,Player>>>) -> Result<(),Response> {
         loop { if let Ok(ref mut players) = players_ref.try_lock(){
             if let Some(player) = players.get_mut(&input.player) {
@@ -134,6 +143,7 @@ impl Game {
             }
         }};
     }
+    /// Logic for switching characters between states.
     fn player_switch_char(character: Option<u32>, player_name: String ,map_ref: &Arc<Mutex<Option<Map>>>, players_ref: &Arc<Mutex<HashMap<String,Player>>>) -> Result<(),Response> {
         let instance_id_op = loop { if let Ok(ref mut players) = players_ref.try_lock(){
             if let Some(player) = players.get_mut(&player_name) {
@@ -198,6 +208,7 @@ impl Game {
 
         Ok(())
     }
+    /// Returns current map state in a response object that is ready to be send.
     fn get_map_res(map_ref: &Arc<Mutex<Option<Map>>>) -> Response {
         loop { if let Ok(map) = map_ref.try_lock() {
             if let Some(out) = (*map).clone() {
@@ -207,6 +218,19 @@ impl Game {
             }
         }}
     }
+    /// Main function for handeling all network and managing what will be done with any receaved packed.
+    /// Basic browser requests are redirected to the project github page
+    /// All endpoints returns current state of the map if succesfull. 
+    ///
+    /// Get / -> redirects on "github.com/3ther-joyboy/Nebula"
+    ///
+    /// Get /map/ -> Current state of the map.
+    ///
+    /// Post /map/ -> New player joining.
+    ///
+    /// Put /map/ -> Waiting for character inputs
+    ///
+    /// Put /character/ -> Logic for chaning characters
     fn handle_connection(mut stream: TcpStream,map_ref: &Arc<Mutex<Option<Map>>>,players_ref: &Arc<Mutex<HashMap<String,Player>>>, password: &String) {
         let headers = Headers::new(&mut stream);
 

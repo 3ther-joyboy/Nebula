@@ -26,6 +26,7 @@ use crate::{
 };
 
 
+/// List of animations character can have, this is mainly used for orientation.
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Animations {
     #[serde(default)]
@@ -40,6 +41,7 @@ pub struct Animations {
     air_born_heavy_attack: Vec<AnimationFrame>,
 }
 impl Animations {
+    /// Iterates throught all textures and tryes to load them on GPU if possible.
     pub fn update_textures(&mut self, display: &mut Display<WindowSurface>) {
         for frame in &mut self.hurt {frame.texture.load_texture(display)}
 
@@ -73,6 +75,7 @@ impl Animations {
         }
     }
 }
+/// Definition for character to be played as.
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Character {
     id: usize,
@@ -105,6 +108,7 @@ impl Character {
     }
 
     const CHAR_PATH: &str = "characters/";
+    /// Tryes to load character from a file format it and load it to memory and GPU if possible.
     pub fn load(char_id: u32,display_option: &mut Option<&mut Display<WindowSurface>>, assets: &String) -> Option<Character> {
         if char_id == 0 {
             let mut default = Self::default();
@@ -132,6 +136,7 @@ impl Character {
         }
         Option::None
     }
+    /// Tryes to load all files in directory, parse them and if possible load them on to GPU.
     pub fn load_all(display: Option<&mut Display<WindowSurface>>, assets: &String) -> HashMap<u32,Character> {
         let mut display: Option<&mut Display<WindowSurface>> = display;
 
@@ -156,6 +161,7 @@ impl Character {
         }
         out
     }
+    /// Gets vector of animation according to its state.
     pub fn get_animations(&self, animation: &AnimationState) -> &Vec<AnimationFrame> {
         match animation {
             AnimationState::Damadged => {&self.animations.hurt},
@@ -170,6 +176,7 @@ impl Character {
         }
     }
 }
+/// Instance of a character taht uses character definition to use for all other information.
 #[derive(Serialize, Deserialize, Clone)]
 pub struct CharacterInstance {
     pub character: u32,
@@ -198,9 +205,11 @@ pub struct CharacterInstance {
 }
 impl CharacterInstance {
     const AIR_ACTION_DEFAULT: u8 = 2;
+    /// Gets current frame of animation, as number in sequence.
     pub fn get_animation_frame(&self) -> usize {
         self.animation_frame
     }
+    /// What animation is currently playing.
     pub fn get_animatin(&self) -> &AnimationState {
         &self.animation
     }
@@ -227,6 +236,7 @@ impl CharacterInstance {
             last_input: CharacterInput::new(),
         }
     }
+    /// "Respawns" the character at world spawn.
     pub fn reset(&mut self) {
         *self = Self::new(self.character, self.object_id);
     }
@@ -246,6 +256,7 @@ impl CharacterInstance {
             }
         }
     }
+    /// Checkes if character will hit them and applyes all effects.
     pub fn hit_registration(&mut self,enemy: &Self, char_sheets: &HashMap<u32,Character>) {
         let (_,hurt_sircles) = self.get_hitboxes(char_sheets);
         let (hit_sircles,_) = enemy.get_hitboxes(char_sheets);
@@ -270,20 +281,25 @@ impl CharacterInstance {
             }
         }
     }
+    /// Disallows repeating jump action by holding it.
     fn jump_just_pressed(&self) -> bool {
         self.input.jump && !self.last_input.jump
     }
+    /// Disallows repeating light attack action by holding it.
     fn light_just_pressed(&self) -> bool {
         self.input.light_attack && !self.last_input.light_attack
     }
+    /// Disallows repeating heavy attack action by holding it.
     fn hevy_just_pressed(&self) -> bool {
         self.input.heavy_attack && !self.last_input.heavy_attack
     }
+    /// Disallows repeating specal action by holding it. (this action isnt used any anywhere)
     #[allow(dead_code)]
     fn spec_just_pressed(&self) -> bool {
         self.input.special && !self.last_input.special
     }
     
+    /// Runs all physic updates, velocity, colision, animation and inputs.
     pub fn update(&mut self, char_sheet: &Character, map: &crate::game::MapInformation,delta: &f32) {
         const GRAVITY: f32 = 0.1;
 
@@ -478,6 +494,8 @@ impl CharacterInstance {
             },
         }
     }
+    /// Moves character one tick in theyr animation, if animation is suposed to loop on end frame
+    /// it loops back.
     fn update_animation(&mut self,character: &Character) {
         let anim: &Vec<AnimationFrame> = &character.get_animations(&self.animation);
 
@@ -499,6 +517,7 @@ impl CharacterInstance {
             self.apply_frame_event(event,&self.clone(),character);
         }
     }
+    /// Gets hitboxes and hurtboxes of current frame of character.
     pub fn get_hitboxes(&self, char_sheet: &HashMap<u32,Character>) -> (Vec<HitSircle>,Vec<ColisionSircle>) {
         let character = char_sheet.get(&self.character).expect("Character that is trying to be rendered not found");
         let anim = character.get_animations(&self.animation);
@@ -515,23 +534,27 @@ impl CharacterInstance {
 
         (hit,hurt)
     }
+    /// Draws out current frame hurtboxes.
     pub fn draw_hurtbox(&self,display: &mut Display<WindowSurface>,frame_display: &mut glium::Frame,char_sheet: &HashMap<u32,Character>) {
         const BLUISH: [f32;4] = [0.1,0.0,1.0,1.0];
         for hurt_sir in &self.get_hitboxes(char_sheet).1 {
             hurt_sir.colision_shape.draw(display,frame_display,&self.position,BLUISH);
         }
     }
+    /// Draws out current frame hitboxes.
     pub fn draw_hitbox(&self,display: &mut Display<WindowSurface>,frame_display: &mut glium::Frame,char_sheet: &HashMap<u32,Character>) {
         const REDISH: [f32;4] = [1.0,0.0,0.1,1.0];
         for hit_sir in &self.get_hitboxes(char_sheet).0 {
             hit_sir.colision_shape.draw(display,frame_display,&self.position,REDISH);
         }
     }
+    /// Draws out current frame colision box.
     pub fn draw_colision_box(&self,display: &mut Display<WindowSurface>,frame_display: &mut glium::Frame,char_sheet: &HashMap<u32,Character>) {
         let character = char_sheet.get(&self.character).expect("Character that is trying to be rendered not found");
         const GREENISH: [f32;4] = [0.0,0.3,0.6,1.0];
         character.colider.draw(display,frame_display,&self.position,GREENISH)
     }
+    /// Renders character at its current frame with correct animation playing.
     pub fn draw(&self,display: &mut Display<WindowSurface>,frame_display: &mut glium::Frame,char_sheet: &HashMap<u32,Character>) {
         let character = char_sheet.get(&self.character).expect("Character that is trying to be rendered not found");
         let position = self.position;

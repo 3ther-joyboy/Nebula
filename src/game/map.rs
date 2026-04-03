@@ -23,6 +23,7 @@ use std::{
     io::Read,
 };
 
+/// Definition for a map to work, it includes all textures, and all physic objects references.
 #[derive(Serialize, Deserialize, Clone)]
 pub struct MapInformation {
     background: Option<Texture>,
@@ -52,6 +53,7 @@ impl MapInformation {
             statics: Vec::new(),
         }
     }
+    /// Iterates across all textures and loads them on to GPU.
     fn load_textures(&mut self, display: &mut Display<WindowSurface>) {
         if let Some(tex) = &mut self.background {
             tex.load_texture(display);
@@ -67,6 +69,7 @@ impl MapInformation {
         serde_json::to_string(self).unwrap()
     }
     const MAP_PATH: &str = "maps/";
+    /// Tryes load file with correct id, parses the map and (if possible) loads textures on to GPU.
     pub fn load(map_id: usize, display_option: &mut Option<&mut Display<WindowSurface>>, assets: &String) -> Option<MapInformation> {
         if map_id == 0 {
             let mut default = Self::default();
@@ -93,6 +96,7 @@ impl MapInformation {
         }
         Option::None
     }
+    /// Iterates along all files and tryes to load them in to memory.
     pub fn load_all(display: Option<&mut Display<WindowSurface>>, assets: &String) -> HashMap<usize,MapInformation> {
         let mut display: Option<&mut Display<WindowSurface>> = display;
 
@@ -117,7 +121,9 @@ impl MapInformation {
         out
     }
 }
-
+/// Instance of a map, doesnt contain any information about how the map looks but information that
+/// is assencial for correctly working game. List of characters, reference to map definition,
+/// currently heighest ID 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Map {
     pub counter: usize,
@@ -134,6 +140,7 @@ impl Map {
         let mut _out: Vec<u8> = Vec::new();
         todo!();
     }
+    /// Creates new character with its own ID, this ID is returned
     pub fn new_istance(&mut self, character: u32) -> u32 {
         self.characters.insert(self.current_id,CharacterInstance::new(character,self.current_id));
         let out = self.current_id;
@@ -159,6 +166,7 @@ impl Map {
             map_id: 0,
         }
     }
+    /// Copy inputs from players to theyr given characters.
     pub fn set_inputs(&mut self,players: HashMap<String,crate::game::Player>) {
         for (_,player) in players {
             if let Some(id) = player.instance && let Some(instance) = &mut self.characters.get_mut(&id) {
@@ -166,6 +174,7 @@ impl Map {
             }
         }
     }
+    /// Runs trhought objects on map and updates theyr colision and update sicles.
     pub fn update(&mut self, char_sheet: &HashMap<u32,Character>,map_pool: &HashMap<usize,MapInformation>, delta: &f32) {
         if let Some(map) = map_pool.get(&self.map_id) {
             // Hitbox check
