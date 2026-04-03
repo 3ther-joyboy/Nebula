@@ -4,8 +4,6 @@ version = "0.0.9"
 edition = "2024"
 
 [dependencies]
-gilrs = "0.11.0"      # Game Input for Controler lib
-
 glium = "0.36.0"      # OpenGL
 winit = "0.30.12"     # Window and input manager
 image = "0.25.9"      # Images
