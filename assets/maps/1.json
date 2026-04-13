@@ -1,4 +1,11 @@
 {
+	"foreground": {
+		"path": "./assets/maps/test_map/overlay.png",
+		"dimensions":[800,450],
+		"scale": 1,
+		"offset":[0,0],
+		"position":[0,0]
+	},
 	"background": {
 		"path": "./assets/maps/test_map/test_background.png",
 		"dimensions":[728,409],

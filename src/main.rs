@@ -22,7 +22,7 @@ struct Args {
     #[arg(short, long, default_value_t = 30.0)]
     time: f32,
     /// Starting map id
-    #[arg(short, long, default_value_t = 6)]
+    #[arg(short, long, default_value_t = 1)]
     map: usize,
     /// Client name
     #[arg(short, long)]
