@@ -366,7 +366,7 @@
 					"position":[433,140],
 					"dimensions":[70,80]
                 },
-				"hold": 3
+				"hold": 7
             },
             {
                 "hurt_sircles": [
@@ -793,7 +793,7 @@
 					"position":[112,354],
 					"dimensions":[40,88]
                 },
-				"hold": 6
+				"hold": 7
             },
             {
                 "hurt_sircles": [
